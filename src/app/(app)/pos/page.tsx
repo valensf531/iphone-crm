@@ -42,6 +42,10 @@ interface AccesorioItem {
 
 export default function PosPage() {
   const { accesoriosEnabled } = useStoreSettings();
+  /* Si el módulo Accesorios está apagado, el paso 3 no existe:
+     Verificación y Cobro se renumeran para no saltar números. */
+  const pasoVerif = accesoriosEnabled ? 4 : 3;
+  const pasoCobro = accesoriosEnabled ? 5 : 4;
   const [stock, setStock] = useState<StockItem[]>([]);
   const [clientes, setClientes] = useState<ClienteLite[]>([]);
   const [accesorios, setAccesorios] = useState<AccesorioItem[]>([]);
@@ -438,7 +442,7 @@ export default function PosPage() {
           <Card className="rounded-3xl">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-[15px]">
-                <ClipboardCheck className="h-4 w-4" aria-hidden="true" /> 4 · Verificación del dispositivo
+                <ClipboardCheck className="h-4 w-4" aria-hidden="true" /> {pasoVerif} · Verificación del dispositivo
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -498,7 +502,7 @@ export default function PosPage() {
         <Card className="rounded-3xl lg:col-span-2 lg:sticky lg:top-4">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-[15px]">
-              <ShoppingCart className="h-4 w-4" aria-hidden="true" /> 5 · Cobro
+              <ShoppingCart className="h-4 w-4" aria-hidden="true" /> {pasoCobro} · Cobro
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
