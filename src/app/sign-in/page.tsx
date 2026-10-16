@@ -91,7 +91,7 @@ export default function SignInPage() {
         <p className="relative z-[2] text-xs tabular-nums text-muted-foreground">Sistema privado de tu tienda · Hecho para vender más rápido</p>
       </section>
 
-      <main className="flex items-center justify-center bg-background px-4 py-10 sm:px-8">
+      <main className="flex items-center justify-center overflow-y-auto bg-background px-4 py-10 pb-safe sm:px-8">
         <div className="w-full max-w-md animate-rise">
           <div className="mb-6 flex items-center gap-3 lg:hidden">
             {logoUrl ? (

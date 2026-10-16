@@ -284,7 +284,7 @@ export default function CanjesPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="rounded-2xl shadow-sm">
           <CardHeader><CardTitle className="text-sm font-bold">Tasar equipo recibido</CardTitle></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
+          <CardContent className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="canje-modelo">Modelo</Label>
               <Select value={MODELOS.includes(form.modelo_recibido) ? form.modelo_recibido : MODELOS[0]} onValueChange={(v) => setForm({ ...form, modelo_recibido: v })}>
@@ -300,15 +300,15 @@ export default function CanjesPage() {
                 <SelectContent><SelectItem value="a">A - Muy bueno</SelectItem><SelectItem value="b">B - Detalles</SelectItem><SelectItem value="c">C - Gastado</SelectItem></SelectContent>
               </Select>
             </div>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.pantalla_original} onChange={(e) => setForm({ ...form, pantalla_original: e.target.checked })} /> Pantalla original</label>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.faceid_ok} onChange={(e) => setForm({ ...form, faceid_ok: e.target.checked })} /> FaceID OK</label>
-            <label className="col-span-2 flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={form.icloud} onChange={(e) => setForm({ ...form, icloud: e.target.checked })} /> iCloud desbloqueado (obligatorio)</label>
-            <div className="col-span-2"><Label>Observaciones</Label><Input value={form.observaciones} onChange={(e) => setForm({ ...form, observaciones: e.target.value })} /></div>
-            <Button className="col-span-2 rounded-xl" onClick={calcular} disabled={calculando}>
+            <label className="flex min-h-[44px] cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3 py-2 text-sm"><input type="checkbox" checked={form.pantalla_original} onChange={(e) => setForm({ ...form, pantalla_original: e.target.checked })} className="h-4 w-4 shrink-0 accent-emerald-600" /> Pantalla original</label>
+            <label className="flex min-h-[44px] cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3 py-2 text-sm"><input type="checkbox" checked={form.faceid_ok} onChange={(e) => setForm({ ...form, faceid_ok: e.target.checked })} className="h-4 w-4 shrink-0 accent-emerald-600" /> FaceID OK</label>
+            <label className="flex min-h-[44px] cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3 py-2 text-sm font-semibold min-[480px]:col-span-2"><input type="checkbox" checked={form.icloud} onChange={(e) => setForm({ ...form, icloud: e.target.checked })} className="h-4 w-4 shrink-0 accent-emerald-600" /> iCloud desbloqueado (obligatorio)</label>
+            <div className="min-[480px]:col-span-2"><Label>Observaciones</Label><Input value={form.observaciones} onChange={(e) => setForm({ ...form, observaciones: e.target.value })} /></div>
+            <Button className="min-[480px]:col-span-2 rounded-xl" onClick={calcular} disabled={calculando}>
               <Calculator className="h-4 w-4" /> {calculando ? "Calculando…" : "Calcular sugerido"}
             </Button>
             {sugerido != null && (
-              <div className="col-span-2 space-y-3 rounded-xl border border-border bg-muted p-3">
+              <div className="min-[480px]:col-span-2 space-y-3 rounded-xl border border-border bg-muted p-3">
                 <p className="text-sm">
                   Sugerido según lista: <strong>{formatUSD(sugerido.valor)}</strong>{" "}
                   <Badge variant={sugerido.origen === "lista" ? "success" : "warning"} className="ml-1">
@@ -386,24 +386,28 @@ export default function CanjesPage() {
                 <TableRow key={r.id}>
                   {editando === r.id ? (
                     <>
-                      <TableCell><Input value={borrador.modelo} onChange={(e) => setBorrador({ ...borrador, modelo: e.target.value })} className="h-8" /></TableCell>
-                      <TableCell><Input inputMode="numeric" value={borrador.bateria_min} onChange={(e) => setBorrador({ ...borrador, bateria_min: e.target.value })} className="h-8" /></TableCell>
-                      <TableCell><Input inputMode="numeric" value={borrador.bateria_max} onChange={(e) => setBorrador({ ...borrador, bateria_max: e.target.value })} className="h-8" /></TableCell>
-                      <TableCell><Input inputMode="decimal" value={borrador.precio_toma_usd} onChange={(e) => setBorrador({ ...borrador, precio_toma_usd: e.target.value })} className="h-8" /></TableCell>
-                      <TableCell className="flex gap-1">
-                        <Button size="sm" className="rounded-lg" onClick={() => guardarEdicion(r.id)}>OK</Button>
-                        <Button size="sm" variant="ghost" className="rounded-lg" onClick={() => setEditando(null)}>X</Button>
+                      <TableCell><Input value={borrador.modelo} onChange={(e) => setBorrador({ ...borrador, modelo: e.target.value })} className="h-10 min-w-[7rem]" /></TableCell>
+                      <TableCell><Input inputMode="numeric" value={borrador.bateria_min} onChange={(e) => setBorrador({ ...borrador, bateria_min: e.target.value })} className="h-10 min-w-[3.5rem]" /></TableCell>
+                      <TableCell><Input inputMode="numeric" value={borrador.bateria_max} onChange={(e) => setBorrador({ ...borrador, bateria_max: e.target.value })} className="h-10 min-w-[3.5rem]" /></TableCell>
+                      <TableCell><Input inputMode="decimal" value={borrador.precio_toma_usd} onChange={(e) => setBorrador({ ...borrador, precio_toma_usd: e.target.value })} className="h-10 min-w-[5rem]" /></TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5">
+                          <Button size="sm" className="h-10 rounded-lg px-3" onClick={() => guardarEdicion(r.id)}>OK</Button>
+                          <Button size="sm" variant="ghost" className="h-10 w-10 rounded-lg p-0" onClick={() => setEditando(null)}>X</Button>
+                        </div>
                       </TableCell>
                     </>
                   ) : (
                     <>
-                      <TableCell className="font-medium">{r.modelo}</TableCell>
-                      <TableCell>{Number(r.bateria_min)}%</TableCell>
-                      <TableCell>{Number(r.bateria_max)}%</TableCell>
-                      <TableCell className="font-bold">{formatUSD(Number(r.precio_toma_usd))}</TableCell>
-                      <TableCell className="flex gap-1">
-                        <Button size="sm" variant="ghost" className="rounded-lg" aria-label="Editar" onClick={() => empezarEdicion(r)}><Pencil className="h-3.5 w-3.5" /></Button>
-                        <Button size="sm" variant="ghost" className="rounded-lg text-destructive" aria-label="Borrar" onClick={() => borrarFila(r.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <TableCell className="min-w-0 max-w-[9rem] truncate font-medium">{r.modelo}</TableCell>
+                      <TableCell className="whitespace-nowrap tabular-nums">{Number(r.bateria_min)}%</TableCell>
+                      <TableCell className="whitespace-nowrap tabular-nums">{Number(r.bateria_max)}%</TableCell>
+                      <TableCell className="whitespace-nowrap font-bold tabular-nums">{formatUSD(Number(r.precio_toma_usd))}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5">
+                          <Button size="sm" variant="ghost" className="h-10 w-10 rounded-lg p-0" aria-label="Editar" onClick={() => empezarEdicion(r)}><Pencil className="h-3.5 w-3.5" /></Button>
+                          <Button size="sm" variant="ghost" className="h-10 w-10 rounded-lg p-0 text-destructive" aria-label="Borrar" onClick={() => borrarFila(r.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                        </div>
                       </TableCell>
                     </>
                   )}
@@ -411,11 +415,11 @@ export default function CanjesPage() {
               ))
               )}
               <TableRow>
-                <TableCell><Input value={nueva.modelo} onChange={(e) => setNueva({ ...nueva, modelo: e.target.value })} placeholder="iPhone 14" className="h-8" /></TableCell>
-                <TableCell><Input inputMode="numeric" value={nueva.bateria_min} onChange={(e) => setNueva({ ...nueva, bateria_min: e.target.value })} placeholder="91" className="h-8" /></TableCell>
-                <TableCell><Input inputMode="numeric" value={nueva.bateria_max} onChange={(e) => setNueva({ ...nueva, bateria_max: e.target.value })} placeholder="100" className="h-8" /></TableCell>
-                <TableCell><Input inputMode="decimal" value={nueva.precio_toma_usd} onChange={(e) => setNueva({ ...nueva, precio_toma_usd: e.target.value })} placeholder="400" className="h-8" /></TableCell>
-                <TableCell><Button size="sm" variant="outline" className="rounded-lg" onClick={agregarFila}><Plus className="h-3.5 w-3.5" /></Button></TableCell>
+                <TableCell><Input value={nueva.modelo} onChange={(e) => setNueva({ ...nueva, modelo: e.target.value })} placeholder="iPhone 14" className="h-10 min-w-[7rem]" /></TableCell>
+                <TableCell><Input inputMode="numeric" value={nueva.bateria_min} onChange={(e) => setNueva({ ...nueva, bateria_min: e.target.value })} placeholder="91" className="h-10 min-w-[3.5rem]" /></TableCell>
+                <TableCell><Input inputMode="numeric" value={nueva.bateria_max} onChange={(e) => setNueva({ ...nueva, bateria_max: e.target.value })} placeholder="100" className="h-10 min-w-[3.5rem]" /></TableCell>
+                <TableCell><Input inputMode="decimal" value={nueva.precio_toma_usd} onChange={(e) => setNueva({ ...nueva, precio_toma_usd: e.target.value })} placeholder="400" className="h-10 min-w-[5rem]" /></TableCell>
+                <TableCell><Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" onClick={agregarFila} aria-label="Agregar fila"><Plus className="h-3.5 w-3.5" /></Button></TableCell>
               </TableRow>
             </TableBody>
           </Table>

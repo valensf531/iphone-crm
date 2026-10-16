@@ -147,18 +147,18 @@ export default async function DashboardPage() {
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
               Stock valorizado
             </p>
-            <p className="font-display mt-2 text-5xl font-bold tabular-nums leading-none tracking-tight text-foreground sm:text-6xl" aria-live="polite">
+            <p className="font-display mt-2 break-words text-4xl font-bold tabular-nums leading-none tracking-tight text-foreground sm:text-6xl" aria-live="polite">
               {formatUSD(d.stock.valorizado)}
             </p>
             <p className="mt-3 max-w-xl text-[15px] leading-relaxed tabular-nums text-muted-foreground">
               <strong className="font-bold text-foreground">{d.stock.disponibles}</strong> {d.stock.disponibles === 1 ? "equipo en stock" : "equipos en stock"} ·{" "}
               <strong className="font-bold text-foreground">{d.ventasMes.cantidad}</strong> ventas este mes ({formatARS(d.ventasMes.total)})
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <Button asChild className="rounded-xl">
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Button asChild className="w-full rounded-xl sm:w-auto">
                 <Link href="/pos"><ShoppingCart className="h-4 w-4" aria-hidden="true" /> Cobrar en PoS</Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-xl">
+              <Button asChild variant="outline" className="w-full rounded-xl sm:w-auto">
                 <Link href="/ventas">Ver ventas <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
               </Button>
             </div>
@@ -242,7 +242,7 @@ export default async function DashboardPage() {
                       <strong className="font-semibold text-foreground">{v.modelo ?? "Equipo"}</strong>
                       <span className="text-muted-foreground"> · </span>
                       <span className="truncate">{v.cliente ?? "Sin cliente"}</span>
-                      <span className="ml-2 shrink-0 text-xs tabular-nums text-muted-foreground">{v.fecha ? dateFmt.format(new Date(v.fecha)) : ""}</span>
+                      <span className="ml-2 hidden shrink-0 text-xs tabular-nums text-muted-foreground sm:inline">{v.fecha ? dateFmt.format(new Date(v.fecha)) : ""}</span>
                     </span>
                     <strong className="shrink-0 font-bold tabular-nums text-foreground">{formatARS(v.precio_final_ars)}</strong>
                   </div>

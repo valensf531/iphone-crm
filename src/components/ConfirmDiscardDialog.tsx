@@ -22,11 +22,11 @@ export function ConfirmDiscardDialog({
             Tenés cambios sin guardar. Si salís ahora, se pierden.
           </p>
         </DialogHeader>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" className="rounded-xl" onClick={onCancel}>
+        <div className="flex flex-col-reverse gap-2 min-[480px]:flex-row min-[480px]:justify-end">
+          <Button variant="outline" className="w-full rounded-xl min-[480px]:w-auto" onClick={onCancel}>
             Seguir editando
           </Button>
-          <Button variant="destructive" className="rounded-xl" onClick={onConfirm}>
+          <Button variant="destructive" className="w-full rounded-xl min-[480px]:w-auto" onClick={onConfirm}>
             Salir sin guardar
           </Button>
         </div>

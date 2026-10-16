@@ -118,7 +118,6 @@ export default function ConfiguracionPage() {
         eyebrow="Tienda"
         title="Configuración"
         description="Tema, módulos, categorías, nombre del local y logo. Se guardan en este dispositivo."
-        className="flex-col items-center text-center [&>div]:items-center"
       />
 
       <div className="mx-auto w-full max-w-2xl space-y-10 pb-4">
@@ -186,15 +185,15 @@ export default function ConfiguracionPage() {
                       toast({ title: enabled ? `${label} ocultado` : `${label} activado`, variant: "success" });
                     }}
                     className={cn(
-                      "relative h-7 w-12 shrink-0 touch-manipulation rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
+                      "relative h-8 w-[52px] shrink-0 touch-manipulation rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                       enabled ? "bg-emerald-500" : "bg-input"
                     )}
                   >
                     <span
                       aria-hidden="true"
                       className={cn(
-                        "absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-[left] duration-150",
-                        enabled ? "left-6" : "left-1"
+                        "absolute top-1.5 h-5 w-5 rounded-full bg-white shadow transition-[left] duration-150",
+                        enabled ? "left-[26px]" : "left-1"
                       )}
                     />
                   </button>
@@ -211,7 +210,7 @@ export default function ConfiguracionPage() {
           </h2>
           <p className="mt-0.5 text-sm text-muted-foreground">Creá las categorías que usás al cargar accesorios.</p>
           <div className="mt-4 space-y-3">
-            <form onSubmit={agregarCategoria} className="flex gap-2">
+            <form onSubmit={agregarCategoria} className="flex flex-col gap-2 min-[480px]:flex-row">
               <Label htmlFor="nueva-cat" className="sr-only">Nueva categoría</Label>
               <Input
                 id="nueva-cat"
@@ -223,7 +222,7 @@ export default function ConfiguracionPage() {
                 value={nuevaCat}
                 onChange={(e) => setNuevaCat(e.target.value)}
               />
-              <Button type="submit" className="shrink-0 rounded-xl">Agregar</Button>
+              <Button type="submit" className="w-full shrink-0 rounded-xl min-[480px]:w-auto">Agregar</Button>
             </form>
             {categorias.length === 0 ? (
               <p className="text-sm text-muted-foreground">Sin categorías.</p>
@@ -239,7 +238,7 @@ export default function ConfiguracionPage() {
                         removeCategoria(c);
                         toast({ title: `Categoría ${c} eliminada`, variant: "success" });
                       }}
-                      className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-background hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                      className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-background hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                     >
                       <X className="h-3.5 w-3.5" aria-hidden="true" />
                     </button>
@@ -259,7 +258,7 @@ export default function ConfiguracionPage() {
           <div className="mt-4 space-y-5">
             <form onSubmit={saveName} className="space-y-2">
               <Label htmlFor="store-name">Nombre del lugar</Label>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 min-[480px]:flex-row">
                 <Input
                   id="store-name"
                   name="store-name"
@@ -270,7 +269,7 @@ export default function ConfiguracionPage() {
                   value={name}
                   onChange={(e) => setNameDraft(e.target.value)}
                 />
-                <Button type="submit" className="shrink-0 rounded-xl">
+                <Button type="submit" className="w-full shrink-0 rounded-xl min-[480px]:w-auto">
                   Guardar
                 </Button>
               </div>

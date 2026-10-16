@@ -97,12 +97,12 @@ export default function VentasPage() {
                     const totalGen = Number(v.precio_final_ars ?? 0) + Number(v.accesorios_total_ars ?? 0);
                     return (
                       <TableRow key={String(v.id)}>
-                        <TableCell>
-                          <span className="font-medium">{String(v.modelo ?? "")}</span>
-                          <span className="ml-2 font-mono text-xs tabular-nums text-muted-foreground">{String(v.imei ?? "").slice(-4) ? `··${String(v.imei).slice(-4)}` : ""}</span>
-                          {accCount > 0 ? <Badge variant="secondary" className="ml-2">+{accCount} acc.</Badge> : null}
+                        <TableCell className="min-w-0">
+                          <span className="block min-w-0 truncate font-medium">{String(v.modelo ?? "")}</span>
+                          <span className="mt-0.5 block font-mono text-xs tabular-nums text-muted-foreground">{String(v.imei ?? "").slice(-4) ? `··${String(v.imei).slice(-4)}` : ""}</span>
+                          {accCount > 0 ? <Badge variant="secondary" className="mt-1">+{accCount} acc.</Badge> : null}
                         </TableCell>
-                        <TableCell>{String(v.cliente_nombre ?? "—")}</TableCell>
+                        <TableCell className="min-w-0 max-w-[10rem] truncate">{String(v.cliente_nombre ?? "—")}</TableCell>
                         <TableCell className="whitespace-nowrap text-xs tabular-nums text-muted-foreground">
                           {v.fecha ? dateTimeFmt.format(new Date(String(v.fecha))) : "—"}
                         </TableCell>
@@ -113,7 +113,7 @@ export default function VentasPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button size="sm" variant="ghost" className="rounded-lg" aria-label={`Acciones de venta ${String(v.modelo ?? "")}`}>
+                              <Button size="sm" variant="ghost" className="h-10 w-10 rounded-lg p-0" aria-label={`Acciones de venta ${String(v.modelo ?? "")}`}>
                                 <MoreVertical className="h-4 w-4" aria-hidden="true" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -215,7 +215,7 @@ export default function VentasPage() {
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="text-muted-foreground">Garantía:</span>
                 {detalle.garantia ? (
-                  <Badge variant={String(detalle.garantia.estado) === "vigente" ? "success" : "secondary"}>
+                  <Badge variant={String(detalle.garantia.estado) === "vigente" ? "success" : "secondary"} className="min-w-0 max-w-full whitespace-normal text-left">
                     {String(detalle.garantia.dias)} días · vence {String(detalle.garantia.fecha_vencimiento).slice(0, 10)} · {String(detalle.garantia.estado)}
                   </Badge>
                 ) : <span className="text-muted-foreground">—</span>}

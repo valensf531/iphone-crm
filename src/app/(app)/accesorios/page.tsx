@@ -194,8 +194,8 @@ export default function AccesoriosPage() {
             </DialogTrigger>
             <DialogContent aria-describedby={undefined}>
               <DialogHeader><DialogTitle className="font-display text-xl">Nuevo accesorio</DialogTitle></DialogHeader>
-              <form onSubmit={crear} className="grid grid-cols-2 gap-3">
-                <div className="col-span-2 space-y-1.5">
+              <form onSubmit={crear} className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+                <div className="min-[480px]:col-span-2 space-y-1.5">
                   <Label htmlFor="acc-nombre">Nombre</Label>
                   <Input id="acc-nombre" name="nombre" autoComplete="off" spellCheck={false} required maxLength={200} placeholder="Cargador 20W USB-C…" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} />
                 </div>
@@ -218,11 +218,11 @@ export default function AccesoriosPage() {
                   <Label htmlFor="acc-ars">Precio ARS manual (opcional)</Label>
                   <Input id="acc-ars" name="precio_ars" type="number" inputMode="decimal" step="any" min={0} autoComplete="off" placeholder="Vacío = automático…" value={form.precio_venta_ars_manual} onChange={(e) => setForm({ ...form, precio_venta_ars_manual: e.target.value })} />
                 </div>
-                <div className="col-span-2 space-y-1.5">
+                <div className="min-[480px]:col-span-2 space-y-1.5">
                   <Label htmlFor="acc-prov">Proveedor</Label>
                   <Input id="acc-prov" name="proveedor" autoComplete="off" placeholder="Proveedor…" value={form.proveedor} onChange={(e) => setForm({ ...form, proveedor: e.target.value })} />
                 </div>
-                <Button type="submit" className="col-span-2 rounded-xl" disabled={saving}>
+                <Button type="submit" className="min-[480px]:col-span-2 rounded-xl" disabled={saving}>
                   {saving ? (<><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Guardando…</>) : "Guardar accesorio"}
                 </Button>
               </form>
@@ -281,11 +281,11 @@ export default function AccesoriosPage() {
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1">
-                                <Button size="sm" variant="outline" className="h-7 w-7 rounded-lg p-0" aria-label={`Quitar una unidad de ${i.nombre}`} disabled={Number(i.cantidad) <= 0} onClick={() => ajustar(i.id, -1, Number(i.cantidad))}>
+                                <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Quitar una unidad de ${i.nombre}`} disabled={Number(i.cantidad) <= 0} onClick={() => ajustar(i.id, -1, Number(i.cantidad))}>
                                   <Minus className="h-3.5 w-3.5" aria-hidden="true" />
                                 </Button>
                                 <span className="w-8 text-center text-sm font-bold tabular-nums">{i.cantidad}</span>
-                                <Button size="sm" variant="outline" className="h-7 w-7 rounded-lg p-0" aria-label={`Agregar una unidad de ${i.nombre}`} onClick={() => ajustar(i.id, 1, Number(i.cantidad))}>
+                                <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Agregar una unidad de ${i.nombre}`} onClick={() => ajustar(i.id, 1, Number(i.cantidad))}>
                                   <Plus className="h-3.5 w-3.5" aria-hidden="true" />
                                 </Button>
                               </div>
@@ -297,7 +297,7 @@ export default function AccesoriosPage() {
                             <TableCell className="text-right">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button size="sm" variant="ghost" className="rounded-xl" aria-label={`Opciones de ${i.nombre}`}>
+                                  <Button size="sm" variant="ghost" className="h-10 w-10 rounded-xl p-0" aria-label={`Opciones de ${i.nombre}`}>
                                     <MoreVertical className="h-4 w-4" aria-hidden="true" />
                                   </Button>
                                 </DropdownMenuTrigger>
@@ -341,8 +341,8 @@ export default function AccesoriosPage() {
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Editar accesorio</DialogTitle>
           </DialogHeader>
-          <form onSubmit={guardarEdicion} className="grid grid-cols-2 gap-3">
-            <div className="col-span-2 space-y-1.5">
+          <form onSubmit={guardarEdicion} className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+            <div className="min-[480px]:col-span-2 space-y-1.5">
               <Label htmlFor="acc-edit-nombre">Nombre *</Label>
               <Input id="acc-edit-nombre" autoComplete="off" spellCheck={false} required maxLength={200} value={editForm.nombre} onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })} />
             </div>
@@ -365,11 +365,11 @@ export default function AccesoriosPage() {
               <Label htmlFor="acc-edit-ars">Precio ARS manual (opcional)</Label>
               <Input id="acc-edit-ars" type="number" inputMode="decimal" step="any" min={0} autoComplete="off" placeholder="Vacío = automático…" value={editForm.precio_venta_ars_manual} onChange={(e) => setEditForm({ ...editForm, precio_venta_ars_manual: e.target.value })} />
             </div>
-            <div className="col-span-2 space-y-1.5">
+            <div className="min-[480px]:col-span-2 space-y-1.5">
               <Label htmlFor="acc-edit-prov">Proveedor</Label>
               <Input id="acc-edit-prov" autoComplete="off" value={editForm.proveedor} onChange={(e) => setEditForm({ ...editForm, proveedor: e.target.value })} />
             </div>
-            <div className="col-span-2 flex justify-end gap-2">
+            <div className="min-[480px]:col-span-2 flex justify-end gap-2">
               <Button type="button" variant="outline" className="rounded-xl" onClick={() => setEditando(null)} disabled={guardandoEdicion}>
                 Cancelar
               </Button>

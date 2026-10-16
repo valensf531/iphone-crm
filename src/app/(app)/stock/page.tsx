@@ -226,8 +226,8 @@ export default function StockPage() {
           </DialogTrigger>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle className="font-display text-xl">Nuevo iPhone</DialogTitle></DialogHeader>
-            <form onSubmit={crear} className="grid grid-cols-2 gap-3">
-              <div className="col-span-2 space-y-1.5">
+            <form onSubmit={crear} className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+              <div className="min-[480px]:col-span-2 space-y-1.5">
                 <Label htmlFor="stock-imei">IMEI (15 dígitos)</Label>
                 <Input id="stock-imei" name="imei" inputMode="numeric" autoComplete="off" spellCheck={false} required minLength={15} maxLength={15} placeholder="3534…" value={form.imei} onChange={(e) => setForm({ ...form, imei: e.target.value })} className="font-mono" />
               </div>
@@ -262,11 +262,11 @@ export default function StockPage() {
                 <Label htmlFor="stock-ars">Precio ARS manual (opcional)</Label>
                 <Input id="stock-ars" name="precio_ars" type="number" inputMode="decimal" step="any" min={0} autoComplete="off" placeholder="Vacío = automático…" value={form.precio_venta_ars_manual} onChange={(e) => setForm({ ...form, precio_venta_ars_manual: e.target.value })} />
               </div>
-              <div className="col-span-2 space-y-1.5">
+              <div className="min-[480px]:col-span-2 space-y-1.5">
                 <Label htmlFor="stock-prov">Proveedor</Label>
                 <Input id="stock-prov" name="proveedor" autoComplete="off" placeholder="Proveedor…" value={form.proveedor} onChange={(e) => setForm({ ...form, proveedor: e.target.value })} />
               </div>
-              <label htmlFor="stock-sellado" className="col-span-2 flex cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3.5 py-2.5 text-sm font-semibold">
+              <label htmlFor="stock-sellado" className="min-[480px]:col-span-2 flex cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3.5 py-2.5 text-sm font-semibold">
                 <input
                   id="stock-sellado"
                   name="sellado"
@@ -277,7 +277,7 @@ export default function StockPage() {
                 />
                 Sellado de fábrica
               </label>
-              <Button type="submit" className="col-span-2 rounded-xl" disabled={saving}>
+              <Button type="submit" className="min-[480px]:col-span-2 rounded-xl" disabled={saving}>
                 {saving ? (<><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Guardando…</>) : "Guardar iPhone"}
               </Button>
             </form>
@@ -302,7 +302,7 @@ export default function StockPage() {
                   <Input id="stock-q" name="q" type="search" autoComplete="off" spellCheck={false} className="pl-9" placeholder="Buscá por IMEI, modelo, color…" value={q} onChange={(e) => setQ(e.target.value)} />
                 </div>
               </form>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6" aria-label="Filtros de stock">
+              <div className="grid grid-cols-1 gap-2 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6" aria-label="Filtros de stock">
                 <div className="space-y-1">
                   <Label htmlFor="stock-f-modelo" className="text-xs">Modelo</Label>
                   <Select value={fModelo || "todos"} onValueChange={(v) => setFModelo(v === "todos" ? "" : v)}>
@@ -388,7 +388,7 @@ export default function StockPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button size="sm" variant="ghost" className="rounded-xl" aria-label={`Opciones de ${i.modelo} ${i.capacidad}`}>
+                              <Button size="sm" variant="ghost" className="h-10 w-10 rounded-xl p-0" aria-label={`Opciones de ${i.modelo} ${i.capacidad}`}>
                                 <MoreVertical className="h-4 w-4" aria-hidden="true" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -440,7 +440,7 @@ export default function StockPage() {
             <DialogTitle className="font-display text-xl">Editar equipo</DialogTitle>
             {editando ? <p className="font-mono text-sm tabular-nums text-muted-foreground">IMEI {editando.imei}</p> : null}
           </DialogHeader>
-          <form onSubmit={guardarEdicion} className="grid grid-cols-2 gap-3">
+          <form onSubmit={guardarEdicion} className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="stock-edit-modelo">Modelo</Label>
               <Select value={MODELOS.includes(editForm.modelo) ? editForm.modelo : (MODELOS[0] ?? editForm.modelo)} onValueChange={(v) => setEditForm({ ...editForm, modelo: v })}>
@@ -471,11 +471,11 @@ export default function StockPage() {
               <Label htmlFor="stock-edit-ars">Precio ARS manual (opcional)</Label>
               <Input id="stock-edit-ars" type="number" inputMode="decimal" step="any" min={0} autoComplete="off" placeholder="Vacío = automático…" value={editForm.precio_venta_ars_manual} onChange={(e) => setEditForm({ ...editForm, precio_venta_ars_manual: e.target.value })} />
             </div>
-            <div className="col-span-2 space-y-1.5">
+            <div className="min-[480px]:col-span-2 space-y-1.5">
               <Label htmlFor="stock-edit-prov">Proveedor</Label>
               <Input id="stock-edit-prov" autoComplete="off" value={editForm.proveedor} onChange={(e) => setEditForm({ ...editForm, proveedor: e.target.value })} />
             </div>
-            <label htmlFor="stock-edit-sellado" className="col-span-2 flex cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3.5 py-2.5 text-sm font-semibold">
+            <label htmlFor="stock-edit-sellado" className="min-[480px]:col-span-2 flex cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3.5 py-2.5 text-sm font-semibold">
               <input
                 id="stock-edit-sellado"
                 type="checkbox"
@@ -485,7 +485,7 @@ export default function StockPage() {
               />
               Sellado de fábrica (sin % de batería)
             </label>
-            <div className="col-span-2 flex justify-end gap-2">
+            <div className="min-[480px]:col-span-2 flex justify-end gap-2">
               <Button type="button" variant="outline" className="rounded-xl" onClick={() => editarGuard.guardClose(() => setEditando(null))} disabled={guardandoEdicion}>
                 Cancelar
               </Button>

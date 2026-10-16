@@ -14,7 +14,7 @@ const DialogContent = ({ className, children, ref, ...props }: React.ComponentPr
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-popover text-popover-foreground p-6 rounded-3xl max-h-[90dvh] overflow-y-auto overscroll-contain shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)]",
+        "fixed left-[50%] top-[50%] z-50 grid w-[calc(100dvw-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-popover text-popover-foreground p-5 rounded-3xl max-h-[90dvh] overflow-y-auto overscroll-contain shadow-[0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_-12px_rgb(0_0_0/0.18)] sm:p-6",
         className
       )}
       {...props}

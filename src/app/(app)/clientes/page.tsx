@@ -372,11 +372,11 @@ export default function ClientesPage() {
                       <p className="truncate text-sm font-bold">{c.nombre}</p>
                       <p className="truncate text-[13px] tabular-nums text-muted-foreground">{lineaContacto(c)}</p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-1">
+                    <div className="flex shrink-0 items-center gap-1.5">
                       <Button
                         size="sm"
                         variant={activo ? "secondary" : "outline"}
-                        className="rounded-xl"
+                        className="h-10 rounded-xl px-3"
                         onClick={() => verHistorial(c.id)}
                         disabled={cargandoHistorial && activo}
                         aria-label={`Ver historial de ${c.nombre}`}
@@ -384,12 +384,12 @@ export default function ClientesPage() {
                         {cargandoHistorial && activo
                           ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                           : <History className="h-3.5 w-3.5" aria-hidden="true" />}
-                        <span className="hidden sm:inline">Historial</span>
+                        <span className="hidden min-[480px]:inline">Historial</span>
                       </Button>
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="rounded-xl text-muted-foreground hover:text-destructive"
+                        className="h-10 w-10 rounded-xl p-0 text-muted-foreground hover:text-destructive"
                         aria-label={`Borrar a ${c.nombre}`}
                         onClick={() => setBorrarId(c.id)}
                       >
@@ -422,7 +422,7 @@ export default function ClientesPage() {
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="cli-dni">DNI</Label>
                 <Input
@@ -549,7 +549,7 @@ export default function ClientesPage() {
                         onChange={(e) => setEditForm({ ...editForm, nombre: e.target.value })}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
                       <div className="space-y-1.5">
                         <Label htmlFor="cli-edit-dni">DNI</Label>
                         <Input
@@ -623,20 +623,20 @@ export default function ClientesPage() {
                 ) : null}
               </section>
 
-              <dl className="grid grid-cols-2 divide-x divide-border rounded-2xl border border-border sm:grid-cols-4" aria-label="Resumen del cliente">
-                <div className="px-4 py-3 text-center">
+              <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-border sm:bg-transparent" aria-label="Resumen del cliente">
+                <div className="bg-card px-4 py-3 text-center">
                   <dt className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                     <ShoppingCart className="h-3.5 w-3.5" aria-hidden="true" /> Compras
                   </dt>
                   <dd className="mt-0.5 text-xl font-extrabold tabular-nums">{historial.resumen.compras}</dd>
                 </div>
-                <div className="px-4 py-3 text-center">
+                <div className="bg-card px-4 py-3 text-center">
                   <dt className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                     <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden="true" /> Canjes
                   </dt>
                   <dd className="mt-0.5 text-xl font-extrabold tabular-nums">{historial.resumen.canjes}</dd>
                 </div>
-                <div className="px-4 py-3 text-center">
+                <div className="bg-card px-4 py-3 text-center">
                   <dt className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                     <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> Vigentes
                   </dt>
@@ -644,7 +644,7 @@ export default function ClientesPage() {
                 </div>
                 <div className="bg-emerald-500/5 px-4 py-3 text-center">
                   <dt className="text-xs text-muted-foreground">Gasto total</dt>
-                  <dd className="mt-0.5 text-lg font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
+                  <dd className="mt-0.5 break-words text-lg font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
                     {formatARS(historial.resumen.gasto_total_ars)}
                   </dd>
                 </div>

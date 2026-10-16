@@ -20,7 +20,7 @@ export default async function AppLayout({
   return (
     <div className="min-h-dvh bg-background text-foreground antialiased">
       <AppSidebar />
-      <main id="contenido" tabIndex={-1} className="pb-28 outline-none lg:pb-20 lg:pl-64">
+      <main id="contenido" tabIndex={-1} className="pb-28 outline-none lg:pb-20 lg:pl-[17rem]">
         <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
       <DolarIsland />

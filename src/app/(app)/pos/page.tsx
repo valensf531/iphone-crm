@@ -397,11 +397,11 @@ export default function PosPage() {
                             <span className="block truncate text-sm font-semibold">{a.nombre}</span>
                             <span className="text-xs tabular-nums text-muted-foreground">{formatARS(accUnitArs(a, tc))} c/u</span>
                           </button>
-                          <Button size="sm" variant="outline" className="h-7 w-7 rounded-lg p-0" aria-label={`Quitar uno de ${a.nombre}`} onClick={() => cambiarAcc(id, -1, Number(a.cantidad))}>
+                          <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Quitar uno de ${a.nombre}`} onClick={() => cambiarAcc(id, -1, Number(a.cantidad))}>
                             <Minus className="h-3.5 w-3.5" aria-hidden="true" />
                           </Button>
                           <span className="w-6 text-center text-sm font-bold tabular-nums" aria-live="polite">{qty}</span>
-                          <Button size="sm" variant="outline" className="h-7 w-7 rounded-lg p-0" aria-label={`Agregar uno de ${a.nombre}`} disabled={qty >= Number(a.cantidad)} onClick={() => cambiarAcc(id, 1, Number(a.cantidad))}>
+                          <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Agregar uno de ${a.nombre}`} disabled={qty >= Number(a.cantidad)} onClick={() => cambiarAcc(id, 1, Number(a.cantidad))}>
                             <Plus className="h-3.5 w-3.5" aria-hidden="true" />
                           </Button>
                         </div>
@@ -452,7 +452,7 @@ export default function PosPage() {
                   placeholder="Estado de la pantalla…"
                   value={verifPantalla}
                   onChange={(e) => setVerifPantalla(e.target.value)}
-                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-base shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <div className="space-y-1.5">
@@ -465,7 +465,7 @@ export default function PosPage() {
                   placeholder="Ninguna / batería, módulo…"
                   value={verifPiezas}
                   onChange={(e) => setVerifPiezas(e.target.value)}
-                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-base shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <div className="space-y-1.5">
@@ -478,7 +478,7 @@ export default function PosPage() {
                   placeholder="Observaciones de la revisión…"
                   value={verifDetalles}
                   onChange={(e) => setVerifDetalles(e.target.value)}
-                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-base shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <label htmlFor="pos-verif-repro" className="flex cursor-pointer touch-manipulation items-center gap-2.5 rounded-xl border border-input bg-control px-3.5 py-2.5 text-sm font-semibold">
@@ -502,7 +502,7 @@ export default function PosPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="pos-precio">Precio USD</Label>
                 <Input id="pos-precio" inputMode="decimal" value={precioUsd} onChange={(e) => setPrecioUsd(e.target.value)} placeholder={equipoSel ? String(equipoSel.precio_venta_usd) : "450"} />
@@ -534,7 +534,7 @@ export default function PosPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="col-span-2 space-y-1.5">
+              <div className="space-y-1.5 min-[480px]:col-span-2">
                 <Label>Garantía</Label>
                 <Select value={diasGarantia} onValueChange={setDiasGarantia}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
@@ -545,7 +545,7 @@ export default function PosPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="col-span-2 space-y-1.5">
+              <div className="space-y-1.5 min-[480px]:col-span-2">
                 <Label htmlFor="pos-comentarios">Comentarios <span className="font-normal text-muted-foreground">(opcional)</span></Label>
                 <textarea
                   id="pos-comentarios"
@@ -555,7 +555,7 @@ export default function PosPage() {
                   placeholder="Detalle de la entrega, acuerdo con el cliente…"
                   value={comentarios}
                   onChange={(e) => setComentarios(e.target.value)}
-                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex min-h-[60px] w-full rounded-xl border border-input bg-control px-3 py-2 text-base shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
             </div>
@@ -569,12 +569,12 @@ export default function PosPage() {
               </div>
               <input ref={fotoRef} type="file" accept="image/*" multiple className="hidden" aria-label="Elegir fotos" onChange={(e) => { void agregarFotos(e.target.files); e.target.value = ""; }} />
               {fotos.length > 0 ? (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {fotos.map((f, i) => (
                     <div key={i} className="group relative overflow-hidden rounded-xl border border-border">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={f} alt={`Foto ${i + 1}`} className="aspect-square w-full object-cover" />
-                      <button type="button" aria-label={`Quitar foto ${i + 1}`} onClick={() => setFotos((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-lg bg-zinc-950/70 p-1.5 text-white hover:bg-zinc-950">
+                      <button type="button" aria-label={`Quitar foto ${i + 1}`} onClick={() => setFotos((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-950/70 text-white hover:bg-zinc-950">
                         <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                       </button>
                     </div>
@@ -585,11 +585,11 @@ export default function PosPage() {
 
             <div className="rounded-2xl border border-border bg-muted p-4" aria-live="polite">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Total a cobrar</p>
-              <p className="font-display mt-1 text-4xl font-bold tabular-nums">{formatARS(totalArs)}</p>
+              <p className="font-display mt-1 break-words text-3xl font-bold tabular-nums sm:text-4xl">{formatARS(totalArs)}</p>
               <p className="mt-1 text-sm tabular-nums text-muted-foreground">Equipo {formatARS(equipoArs)}{accesoriosTotalArs > 0 ? ` + acc. ${formatARS(accesoriosTotalArs)}` : ""}</p>
             </div>
 
-            <Button className="w-full rounded-2xl" size="lg" onClick={cobrar} disabled={!stockId || !clienteId || !precioUsd || !tipoCambio || !verifCompleta || vendiendo || procesandoFotos}>
+            <Button className="h-auto min-h-12 w-full whitespace-normal rounded-2xl py-3" size="lg" onClick={cobrar} disabled={!stockId || !clienteId || !precioUsd || !tipoCambio || !verifCompleta || vendiendo || procesandoFotos}>
               {vendiendo ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Cobrando…</> : `Cobrar ${formatARS(totalArs)}`}
             </Button>
             {!stockId || !clienteId ? <p className="text-center text-xs text-muted-foreground">Elegí equipo y cliente para cobrar.</p> : !verifCompleta ? <p className="text-center text-xs text-muted-foreground">Completá la verificación del dispositivo para cobrar.</p> : null}

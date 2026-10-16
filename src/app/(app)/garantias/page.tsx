@@ -87,12 +87,17 @@ export default function GarantiasPage() {
               ) : (
                 items.map((g) => (
                   <TableRow key={String(g.id)}>
-                    <TableCell>{String(g.modelo ?? "")} · {String(g.imei ?? "")}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{String(g.fecha_vencimiento ?? "").slice(0, 10)}</TableCell>
-                    <TableCell><Badge variant={g.estado === "vigente" ? "success" : g.estado === "en_reclamo" ? "warning" : "secondary"}>{String(g.estado)}</Badge></TableCell>
-                    <TableCell className="flex gap-1">
-                      <Button size="sm" variant="outline" onClick={() => reclamo(String(g.id), false)}>Reclamo</Button>
-                      <Button size="sm" variant="ghost" onClick={() => reclamo(String(g.id), true)}>Mal uso</Button>
+                    <TableCell className="min-w-0">
+                      <span className="block min-w-0 truncate font-medium">{String(g.modelo ?? "")}</span>
+                      <span className="mt-0.5 block font-mono text-xs tabular-nums text-muted-foreground">··{String(g.imei ?? "").slice(-4)}</span>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap text-xs tabular-nums">{String(g.fecha_vencimiento ?? "").slice(0, 10)}</TableCell>
+                    <TableCell><Badge variant={g.estado === "vigente" ? "success" : g.estado === "en_reclamo" ? "warning" : "secondary"} className="whitespace-nowrap">{String(g.estado).replace("_", " ")}</Badge></TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1.5 min-[480px]:flex-row">
+                        <Button size="sm" variant="outline" className="min-h-[40px]" onClick={() => reclamo(String(g.id), false)}>Reclamo</Button>
+                        <Button size="sm" variant="ghost" className="min-h-[40px]" onClick={() => reclamo(String(g.id), true)}>Mal uso</Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

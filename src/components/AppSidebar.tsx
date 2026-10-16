@@ -127,10 +127,7 @@ export function AppSidebar() {
       </aside>
       <nav
         aria-label="Navegación principal"
-        className={cn(
-          "fixed inset-x-0 bottom-0 z-40 grid gap-1 border-t border-border bg-background/95 px-2 pt-2 pb-safe backdrop-blur-xl lg:hidden",
-          nav.length <= 6 ? "grid-cols-6" : nav.length === 7 ? "grid-cols-7" : "grid-cols-4"
-        )}
+        className="scrollbar-hide fixed inset-x-0 bottom-0 z-40 flex snap-x gap-1 overflow-x-auto border-t border-border bg-background/95 px-2 pt-2 pb-safe backdrop-blur-xl lg:hidden"
       >
         {nav.map((item) => {
           const active = pathname === item.href;
@@ -141,7 +138,7 @@ export function AppSidebar() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-[44px] touch-manipulation flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
+                "flex min-h-[56px] w-[68px] shrink-0 snap-start touch-manipulation flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                 active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
