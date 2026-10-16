@@ -26,6 +26,45 @@ interface Accesorio {
   proveedor: string | null;
 }
 
+/* Stepper de cantidad reutilizado en tabla (desktop) y tarjetas (mobile). */
+function StepperCantidad({ nombre, cantidad, onAjustar }: { nombre: string; cantidad: number; onAjustar: (delta: number) => void }) {
+  return (
+    <div className="flex items-center gap-1">
+      <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Quitar una unidad de ${nombre}`} disabled={Number(cantidad) <= 0} onClick={() => onAjustar(-1)}>
+        <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+      </Button>
+      <span className="w-8 text-center text-sm font-bold tabular-nums" aria-live="polite">{cantidad}</span>
+      <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Agregar una unidad de ${nombre}`} onClick={() => onAjustar(1)}>
+        <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+      </Button>
+    </div>
+  );
+}
+
+/* Menú Editar/Borrar reutilizado en tabla (desktop) y tarjetas (mobile). */
+function AccionesAccesorio({ nombre, onEditar, onBorrar }: { nombre: string; onEditar: () => void; onBorrar: () => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="sm" variant="ghost" className="h-10 w-10 shrink-0 rounded-xl p-0" aria-label={`Opciones de ${nombre}`}>
+          <MoreVertical className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={onEditar}>
+          <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> Editar
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={onBorrar}
+          className="text-destructive focus:text-destructive"
+        >
+          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" /> Borrar
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export default function AccesoriosPage() {
   const { categorias, accesoriosEnabled } = useStoreSettings();
   const mounted = useSyncExternalStore(
@@ -263,7 +302,39 @@ export default function AccesoriosPage() {
                 </div>
               </form>
               <p className="text-xs tabular-nums text-muted-foreground" aria-live="polite">{items.length} resultado{items.length === 1 ? "" : "s"}</p>
-              <div className="cv-auto -mx-1 px-1">
+              {/* Mobile: tarjetas apiladas (la tabla de 4 columnas no entra a 360px) */}
+              {cargando ? (
+                <div className="space-y-2 sm:hidden" aria-label="Cargando accesorios">
+                  {["m1", "m2", "m3", "m4"].map((k) => (
+                    <div key={k} className="h-[104px] animate-pulse rounded-2xl bg-muted" />
+                  ))}
+                </div>
+              ) : items.length > 0 ? (
+                <ul className="space-y-2 sm:hidden" aria-label="Listado de accesorios">
+                  {items.map((i) => {
+                    const ars = i.precio_venta_ars_manual != null ? Number(i.precio_venta_ars_manual) : arsFromUsd(Number(i.precio_venta_usd), dolar);
+                    return (
+                      <li key={i.id} className="rounded-2xl border border-border p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-bold text-foreground">{i.nombre}</p>
+                            <p className="mt-0.5 truncate text-xs text-muted-foreground">{i.categoria}</p>
+                          </div>
+                          <AccionesAccesorio nombre={i.nombre} onEditar={() => abrirEdicion(i)} onBorrar={() => setBorrarAcc(i)} />
+                        </div>
+                        <div className="mt-2.5 flex items-end justify-between gap-2">
+                          <StepperCantidad nombre={i.nombre} cantidad={Number(i.cantidad)} onAjustar={(d) => ajustar(i.id, d, Number(i.cantidad))} />
+                          <div className="text-right">
+                            <p className="text-sm font-bold tabular-nums text-foreground">{formatUSD(i.precio_venta_usd)}</p>
+                            <p className="text-xs tabular-nums text-muted-foreground">{formatARS(ars)}</p>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : null}
+              <div className="cv-auto -mx-1 hidden px-1 sm:block">
                 <Table>
                   <caption className="sr-only">Listado de accesorios con cantidad y precio</caption>
                   <TableHeader><TableRow><TableHead scope="col">Producto</TableHead><TableHead scope="col">Cantidad</TableHead><TableHead scope="col" className="text-right">Precio</TableHead><TableHead scope="col"><span className="sr-only">Acciones</span></TableHead></TableRow></TableHeader>
@@ -280,39 +351,14 @@ export default function AccesoriosPage() {
                               <p className="mt-0.5 min-w-0 truncate text-xs text-muted-foreground">{i.categoria}</p>
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-1">
-                                <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Quitar una unidad de ${i.nombre}`} disabled={Number(i.cantidad) <= 0} onClick={() => ajustar(i.id, -1, Number(i.cantidad))}>
-                                  <Minus className="h-3.5 w-3.5" aria-hidden="true" />
-                                </Button>
-                                <span className="w-8 text-center text-sm font-bold tabular-nums">{i.cantidad}</span>
-                                <Button size="sm" variant="outline" className="h-10 w-10 rounded-lg p-0" aria-label={`Agregar una unidad de ${i.nombre}`} onClick={() => ajustar(i.id, 1, Number(i.cantidad))}>
-                                  <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-                                </Button>
-                              </div>
+                              <StepperCantidad nombre={i.nombre} cantidad={Number(i.cantidad)} onAjustar={(d) => ajustar(i.id, d, Number(i.cantidad))} />
                             </TableCell>
                             <TableCell className="text-right">
                               <p className="text-sm font-bold tabular-nums text-foreground">{formatUSD(i.precio_venta_usd)}</p>
                               <p className="text-xs tabular-nums text-muted-foreground">{formatARS(ars)}</p>
                             </TableCell>
                             <TableCell className="text-right">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button size="sm" variant="ghost" className="h-10 w-10 rounded-xl p-0" aria-label={`Opciones de ${i.nombre}`}>
-                                    <MoreVertical className="h-4 w-4" aria-hidden="true" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onSelect={() => abrirEdicion(i)}>
-                                    <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> Editar
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onSelect={() => setBorrarAcc(i)}
-                                    className="text-destructive focus:text-destructive"
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" /> Borrar
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                              <AccionesAccesorio nombre={i.nombre} onEditar={() => abrirEdicion(i)} onBorrar={() => setBorrarAcc(i)} />
                             </TableCell>
                           </TableRow>
                         );
