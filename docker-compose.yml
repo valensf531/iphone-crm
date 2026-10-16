@@ -1,0 +1,35 @@
+# Compose local del CRM: app + Postgres.
+# La app lee .env.local (ver .env.example).
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/iphone_crm
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: iphone_crm
+    volumes:
+      - pgdata-crm:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata-crm:
