@@ -127,8 +127,9 @@ export function AppSidebar() {
       </aside>
       <nav
         aria-label="Navegación principal"
-        className="scrollbar-hide fixed inset-x-0 bottom-0 z-40 flex snap-x gap-1 overflow-x-auto border-t border-border bg-background/95 px-2 pt-2 pb-safe backdrop-blur-xl lg:hidden"
+        className="scrollbar-hide fixed inset-x-0 bottom-0 z-40 flex overflow-x-auto border-t border-border bg-background/95 px-2 pt-2 pb-safe backdrop-blur-xl lg:hidden"
       >
+        <div className="m-auto flex gap-1">
         {nav.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
@@ -148,6 +149,7 @@ export function AppSidebar() {
             </Link>
           );
         })}
+        </div>
       </nav>
     </>
   );
