@@ -15,9 +15,9 @@ export async function GET() {
     getDolarSnapshot(),
     sql`
       SELECT oficial_venta, blue_venta, fuente, fecha
-      FROM dolar_rates WHERE user_id = ${access.restaurantId}
+      FROM dolar_rates WHERE user_id = ${access.storeId}
       ORDER BY fecha DESC LIMIT 1`,
-    sql`SELECT dolar_preferido FROM crm_settings WHERE user_id = ${access.restaurantId}`,
+    sql`SELECT dolar_preferido FROM crm_settings WHERE user_id = ${access.storeId}`,
   ]);
   const saved = rows[0] as { oficial_venta?: number; blue_venta?: number; fuente?: string; fecha?: string } | undefined;
 
@@ -34,7 +34,7 @@ export async function GET() {
       if (cambio || viejo) {
         await sql`
           INSERT INTO dolar_rates (user_id, oficial_compra, oficial_venta, blue_compra, blue_venta, fuente, manual_override)
-          VALUES (${access.restaurantId}, ${live.oficial.compra ?? null}, ${live.oficial.venta ?? null}, ${live.blue.compra ?? null}, ${live.blue.venta ?? null}, 'dolarapi.com', false)`;
+          VALUES (${access.storeId}, ${live.oficial.compra ?? null}, ${live.oficial.venta ?? null}, ${live.blue.compra ?? null}, ${live.blue.venta ?? null}, 'dolarapi.com', false)`;
       }
     }
     return NextResponse.json({
@@ -58,13 +58,13 @@ export async function POST(req: Request) {
   const sql = getSql();
   const rateP = sql`
     INSERT INTO dolar_rates (user_id, oficial_compra, oficial_venta, blue_compra, blue_venta, fuente, manual_override)
-    VALUES (${access.restaurantId}, ${oficial_compra ?? null}, ${oficial_venta ?? null}, ${blue_compra ?? null}, ${blue_venta ?? null}, 'manual', true)`;
+    VALUES (${access.storeId}, ${oficial_compra ?? null}, ${oficial_venta ?? null}, ${blue_compra ?? null}, ${blue_venta ?? null}, 'manual', true)`;
   if (preferido === "blue" || preferido === "oficial") {
     await Promise.all([
       rateP,
       sql`
         INSERT INTO crm_settings (user_id, dolar_preferido, updated_at)
-        VALUES (${access.restaurantId}, ${preferido}, NOW())
+        VALUES (${access.storeId}, ${preferido}, NOW())
         ON CONFLICT (user_id) DO UPDATE SET dolar_preferido = EXCLUDED.dolar_preferido, updated_at = NOW()`,
     ]);
   } else {

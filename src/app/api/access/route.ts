@@ -12,7 +12,7 @@ export async function GET() {
     }
     return NextResponse.json({
       userId: access.userId,
-      restaurantId: access.restaurantId,
+      storeId: access.storeId,
       role: access.role,
       isAdmin: access.isAdmin,
     });

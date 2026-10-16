@@ -11,7 +11,7 @@ export async function GET() {
   const access = await requireAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
-  const rows = await sql`SELECT c.*, cl.nombre as cliente_nombre FROM canjes c LEFT JOIN clientes cl ON cl.id = c.cliente_id WHERE c.user_id = ${access.restaurantId} ORDER BY c.fecha DESC LIMIT 200`;
+  const rows = await sql`SELECT c.*, cl.nombre as cliente_nombre FROM canjes c LEFT JOIN clientes cl ON cl.id = c.cliente_id WHERE c.user_id = ${access.storeId} ORDER BY c.fecha DESC LIMIT 200`;
   return NextResponse.json({ canjes: rows });
 }
 
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Modelo y batería son obligatorios" }, { status: 400 });
   }
   const sql = getSql();
-  const listaRows = await sql`SELECT modelo, bateria_min, bateria_max, precio_toma_usd FROM tasacion_base WHERE user_id = ${admin.restaurantId}`;
+  const listaRows = await sql`SELECT modelo, bateria_min, bateria_max, precio_toma_usd FROM tasacion_base WHERE user_id = ${admin.storeId}`;
   const lista = listaRows as unknown as TasacionRow[];
   const tas = tasarConLista(lista, {
     modelo: String(modelo_recibido),
@@ -45,6 +45,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Precio final inválido" }, { status: 400 });
   }
   await sql`INSERT INTO canjes (id, user_id, cliente_id, modelo_recibido, capacidad_recibida, imei_recibido, bateria_pct, estetica, pantalla_original, faceid_ok, icloud_desbloqueado, observaciones, tasacion_auto_usd, tasacion_final_usd, estado)
-    VALUES (${id}, ${admin.restaurantId}, ${(cliente_id as string) ?? null}, ${String(modelo_recibido)}, ${(capacidad_recibida as string) ?? null}, ${(imei_recibido as string) ?? null}, ${Number(bateria_pct)}, ${(estetica as string) ?? "a"}, ${pantalla_original !== false}, ${faceid_ok !== false}, ${icloud_desbloqueado !== false}, ${(observaciones as string) ?? null}, ${tas.valor}, ${final}, 'tasado')`;
+    VALUES (${id}, ${admin.storeId}, ${(cliente_id as string) ?? null}, ${String(modelo_recibido)}, ${(capacidad_recibida as string) ?? null}, ${(imei_recibido as string) ?? null}, ${Number(bateria_pct)}, ${(estetica as string) ?? "a"}, ${pantalla_original !== false}, ${faceid_ok !== false}, ${icloud_desbloqueado !== false}, ${(observaciones as string) ?? null}, ${tas.valor}, ${final}, 'tasado')`;
   return NextResponse.json({ ok: true, id, tasacion_auto: tas.valor, tasacion_final: final, origen: tas.origen }, { status: 201 });
 }

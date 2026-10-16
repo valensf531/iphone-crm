@@ -17,7 +17,7 @@ export async function GET() {
       (SELECT COALESCE(SUM(precio_final_ars), 0) FROM venta_accesorios a WHERE a.venta_id = v.id) as accesorios_total_ars
     FROM ventas v LEFT JOIN clientes cl ON cl.id = v.cliente_id
     LEFT JOIN iphone_stock s ON s.id = v.stock_id
-    WHERE v.user_id = ${access.restaurantId} ORDER BY v.fecha DESC LIMIT 200`;
+    WHERE v.user_id = ${access.storeId} ORDER BY v.fecha DESC LIMIT 200`;
   return NextResponse.json({ ventas: rows });
 }
 
@@ -56,8 +56,8 @@ export async function POST(req: Request) {
   const sql = getSql();
   // Validaciones independientes en paralelo (1 round-trip en vez de 2).
   const [stock, cli] = await Promise.all([
-    sql`SELECT * FROM iphone_stock WHERE id = ${String(stock_id)} AND user_id = ${admin.restaurantId}`,
-    sql`SELECT id FROM clientes WHERE id = ${String(cliente_id)} AND user_id = ${admin.restaurantId}`,
+    sql`SELECT * FROM iphone_stock WHERE id = ${String(stock_id)} AND user_id = ${admin.storeId}`,
+    sql`SELECT id FROM clientes WHERE id = ${String(cliente_id)} AND user_id = ${admin.storeId}`,
   ]);
   if (stock.length === 0) return NextResponse.json({ error: "Equipo no encontrado" }, { status: 404 });
   if (cli.length === 0) return NextResponse.json({ error: "Cliente no encontrado" }, { status: 404 });  if ((stock[0] as { estado: string }).estado === "vendido") {
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   const accRows = await Promise.all(
     accArr.map((item) => {
       const o = item as Record<string, unknown>;
-      return sql`SELECT * FROM accesorios WHERE id = ${String(o.accesorio_id ?? "")} AND user_id = ${admin.restaurantId}`;
+      return sql`SELECT * FROM accesorios WHERE id = ${String(o.accesorio_id ?? "")} AND user_id = ${admin.storeId}`;
     })
   );
   const accLines: AccLine[] = [];
@@ -102,22 +102,22 @@ export async function POST(req: Request) {
   const ars = Math.round((usd - desc) * tc);
   const ventaId = uid("vta");
   await sql`INSERT INTO ventas (id, user_id, cliente_id, stock_id, precio_usd, dolar_tipo, tipo_cambio, precio_final_ars, metodo_pago, canje_id, descuento_canje_usd, notas)
-    VALUES (${ventaId}, ${admin.restaurantId}, ${(cliente_id as string) ?? null}, ${String(stock_id)}, ${usd}, ${String(dolar_tipo ?? "blue")}, ${tc}, ${ars}, ${String(metodo_pago ?? "efectivo")}, ${(canje_id as string) ?? null}, ${desc}, ${(notas as string) ?? null})`;
-  await sql`UPDATE iphone_stock SET estado = 'vendido', updated_at = NOW() WHERE id = ${String(stock_id)} AND user_id = ${admin.restaurantId}`;
-  await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.restaurantId}, ${String(stock_id)}, 'venta', ${"venta " + ventaId})`;
+    VALUES (${ventaId}, ${admin.storeId}, ${(cliente_id as string) ?? null}, ${String(stock_id)}, ${usd}, ${String(dolar_tipo ?? "blue")}, ${tc}, ${ars}, ${String(metodo_pago ?? "efectivo")}, ${(canje_id as string) ?? null}, ${desc}, ${(notas as string) ?? null})`;
+  await sql`UPDATE iphone_stock SET estado = 'vendido', updated_at = NOW() WHERE id = ${String(stock_id)} AND user_id = ${admin.storeId}`;
+  await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.storeId}, ${String(stock_id)}, 'venta', ${"venta " + ventaId})`;
 
   // Accesorios: snapshot + descuento de stock (todo en paralelo).
   let accesoriosTotalArs = 0;
   for (const l of accLines) accesoriosTotalArs += l.precio_ars;
   await Promise.all([
     ...accLines.map((l) => sql`INSERT INTO venta_accesorios (id, user_id, venta_id, accesorio_id, nombre, cantidad, precio_usd, precio_final_ars)
-      VALUES (${uid("vac")}, ${admin.restaurantId}, ${ventaId}, ${l.accesorio_id}, ${l.nombre}, ${l.cantidad}, ${l.precio_usd}, ${l.precio_ars})`),
-    ...accLines.map((l) => sql`UPDATE accesorios SET cantidad = cantidad - ${l.cantidad}, updated_at = NOW() WHERE id = ${l.accesorio_id} AND user_id = ${admin.restaurantId}`),
+      VALUES (${uid("vac")}, ${admin.storeId}, ${ventaId}, ${l.accesorio_id}, ${l.nombre}, ${l.cantidad}, ${l.precio_usd}, ${l.precio_ars})`),
+    ...accLines.map((l) => sql`UPDATE accesorios SET cantidad = cantidad - ${l.cantidad}, updated_at = NOW() WHERE id = ${l.accesorio_id} AND user_id = ${admin.storeId}`),
     // Fotos de cómo se entregó el equipo (opcional, máx. 4).
-    ...fotosArr.map((foto) => sql`INSERT INTO venta_fotos (id, user_id, venta_id, foto) VALUES (${uid("fot")}, ${admin.restaurantId}, ${ventaId}, ${foto})`),
+    ...fotosArr.map((foto) => sql`INSERT INTO venta_fotos (id, user_id, venta_id, foto) VALUES (${uid("fot")}, ${admin.storeId}, ${ventaId}, ${foto})`),
     // Verificación del dispositivo (obligatoria, 1-a-1 por venta).
     sql`INSERT INTO venta_verificacion (id, user_id, venta_id, pantalla, piezas_cambiadas, detalles, repro)
-      VALUES (${uid("vve")}, ${admin.restaurantId}, ${ventaId}, ${verifPantalla}, ${verifPiezas}, ${verifDetalles}, ${verifRepro})`,
+      VALUES (${uid("vve")}, ${admin.storeId}, ${ventaId}, ${verifPantalla}, ${verifPiezas}, ${verifDetalles}, ${verifRepro})`,
   ]);
 
   // Garantía automática de 30 días (solo fallas del equipo).
@@ -128,18 +128,18 @@ export async function POST(req: Request) {
   const dias = Number.isFinite(diasRaw) ? Math.max(0, Math.floor(diasRaw)) : 30;
   const garId = uid("gar");
   await sql`INSERT INTO garantias (id, user_id, venta_id, stock_id, cliente_id, dias, fecha_vencimiento, estado)
-    VALUES (${garId}, ${admin.restaurantId}, ${ventaId}, ${String(stock_id)}, ${(cliente_id as string) ?? null}, ${dias}, CURRENT_DATE + ${dias}::int, 'vigente')`;
+    VALUES (${garId}, ${admin.storeId}, ${ventaId}, ${String(stock_id)}, ${(cliente_id as string) ?? null}, ${dias}, CURRENT_DATE + ${dias}::int, 'vigente')`;
 
   // Si el canje se usó, márcalo aceptado y da de alta el equipo recibido en stock.
   if (canje_id) {
-    const cnj = await sql`SELECT * FROM canjes WHERE id = ${String(canje_id)} AND user_id = ${admin.restaurantId}`;
+    const cnj = await sql`SELECT * FROM canjes WHERE id = ${String(canje_id)} AND user_id = ${admin.storeId}`;
     if (cnj.length > 0) {
       const c = cnj[0] as { modelo_recibido: string; capacidad_recibida: string; imei_recibido: string; bateria_pct: number; tasacion_final_usd: number };
       await sql`UPDATE canjes SET estado = 'aceptado', stock_nuevo_id = ${String(stock_id)} WHERE id = ${String(canje_id)}`;
       if (c.imei_recibido) {
         const entradaId = uid("stk");
         await sql`INSERT INTO iphone_stock (id, user_id, imei, modelo, capacidad, bateria_pct, estado, estado_equipo, precio_compra_usd, precio_venta_usd, proveedor, notas)
-          VALUES (${entradaId}, ${admin.restaurantId}, ${c.imei_recibido}, ${c.modelo_recibido}, ${c.capacidad_recibida ?? "128GB"}, ${c.bateria_pct ?? null}, 'disponible', 'usado_a', ${c.tasacion_final_usd ?? 0}, 0, 'plan canje', ${"ingreso por canje " + String(canje_id)})`;
+          VALUES (${entradaId}, ${admin.storeId}, ${c.imei_recibido}, ${c.modelo_recibido}, ${c.capacidad_recibida ?? "128GB"}, ${c.bateria_pct ?? null}, 'disponible', 'usado_a', ${c.tasacion_final_usd ?? 0}, 0, 'plan canje', ${"ingreso por canje " + String(canje_id)})`;
         await sql`UPDATE canjes SET stock_entrada_id = ${entradaId} WHERE id = ${String(canje_id)}`;
       }
     }

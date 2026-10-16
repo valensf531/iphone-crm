@@ -21,9 +21,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   // Query simple sin template dinámico complejo: actualiza campo por campo con SQL parametrizado crudo vía neon query().
   await sql.query(
     `UPDATE iphone_stock SET ${sets.join(", ")}, updated_at = NOW() WHERE id = $1 AND user_id = $2`,
-    [id, admin.restaurantId, ...values]
+    [id, admin.storeId, ...values]
   );
-  await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.restaurantId}, ${id}, 'ajuste', 'edición')`;
+  await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.storeId}, ${id}, 'ajuste', 'edición')`;
   return NextResponse.json({ ok: true });
 }
 
@@ -33,11 +33,11 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
   const sql = getSql();
   const movimientos = await sql`
-    SELECT (SELECT COUNT(*)::int FROM ventas WHERE stock_id = ${id} AND user_id = ${admin.restaurantId})
-      + (SELECT COUNT(*)::int FROM garantias WHERE stock_id = ${id} AND user_id = ${admin.restaurantId}) as total`;
+    SELECT (SELECT COUNT(*)::int FROM ventas WHERE stock_id = ${id} AND user_id = ${admin.storeId})
+      + (SELECT COUNT(*)::int FROM garantias WHERE stock_id = ${id} AND user_id = ${admin.storeId}) as total`;
   if ((movimientos[0] as { total: number }).total > 0) {
     return NextResponse.json({ error: "No se puede borrar: el equipo tiene ventas o garantías asociadas" }, { status: 409 });
   }
-  await sql`DELETE FROM iphone_stock WHERE id = ${id} AND user_id = ${admin.restaurantId}`;
+  await sql`DELETE FROM iphone_stock WHERE id = ${id} AND user_id = ${admin.storeId}`;
   return NextResponse.json({ ok: true });
 }

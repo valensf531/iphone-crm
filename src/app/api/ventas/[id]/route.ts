@@ -17,16 +17,16 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     FROM ventas v
     LEFT JOIN clientes cl ON cl.id = v.cliente_id
     LEFT JOIN iphone_stock s ON s.id = v.stock_id
-    WHERE v.id = ${id} AND v.user_id = ${access.restaurantId}
+    WHERE v.id = ${id} AND v.user_id = ${access.storeId}
     LIMIT 1`;
   if (ventas.length === 0) return NextResponse.json({ error: "Venta no encontrada" }, { status: 404 });
   const venta = ventas[0] as Record<string, unknown>;
 
   const [fotos, garantias, accs, verif] = await Promise.all([
-    sql`SELECT id, foto, created_at FROM venta_fotos WHERE venta_id = ${id} AND user_id = ${access.restaurantId} ORDER BY created_at ASC`,
-    sql`SELECT id, dias, fecha_inicio, fecha_vencimiento, estado FROM garantias WHERE venta_id = ${id} AND user_id = ${access.restaurantId} ORDER BY created_at DESC LIMIT 1`,
-    sql`SELECT id, accesorio_id, nombre, cantidad, precio_usd, precio_final_ars FROM venta_accesorios WHERE venta_id = ${id} AND user_id = ${access.restaurantId} ORDER BY created_at ASC`,
-    sql`SELECT pantalla, piezas_cambiadas, detalles, repro FROM venta_verificacion WHERE venta_id = ${id} AND user_id = ${access.restaurantId} LIMIT 1`,
+    sql`SELECT id, foto, created_at FROM venta_fotos WHERE venta_id = ${id} AND user_id = ${access.storeId} ORDER BY created_at ASC`,
+    sql`SELECT id, dias, fecha_inicio, fecha_vencimiento, estado FROM garantias WHERE venta_id = ${id} AND user_id = ${access.storeId} ORDER BY created_at DESC LIMIT 1`,
+    sql`SELECT id, accesorio_id, nombre, cantidad, precio_usd, precio_final_ars FROM venta_accesorios WHERE venta_id = ${id} AND user_id = ${access.storeId} ORDER BY created_at ASC`,
+    sql`SELECT pantalla, piezas_cambiadas, detalles, repro FROM venta_verificacion WHERE venta_id = ${id} AND user_id = ${access.storeId} LIMIT 1`,
   ]);
 
   return NextResponse.json({ venta, fotos, garantia: (garantias[0] as Record<string, unknown> | undefined) ?? null, accesorios: accs, verificacion: (verif[0] as Record<string, unknown> | undefined) ?? null });

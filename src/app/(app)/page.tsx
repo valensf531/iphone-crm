@@ -16,11 +16,11 @@ async function getData() {
   const sql = getSql();
   try {
     const [stock, porModelo, ventasMes, gar, ultimas] = await Promise.all([
-      sql`SELECT COUNT(*) FILTER (WHERE estado='disponible')::int as total, COUNT(*) FILTER (WHERE estado='disponible')::int as disponibles, COALESCE(SUM(precio_venta_usd) FILTER (WHERE estado='disponible'),0) as valorizado FROM iphone_stock WHERE user_id = ${access.restaurantId}`,
-      sql`SELECT modelo, COUNT(*)::int as cantidad FROM iphone_stock WHERE user_id = ${access.restaurantId} AND estado='disponible' GROUP BY modelo ORDER BY cantidad DESC LIMIT 8`,
-      sql`SELECT COUNT(*)::int as cantidad, COALESCE(SUM(precio_final_ars),0) as total FROM ventas WHERE user_id = ${access.restaurantId} AND fecha >= date_trunc('month', NOW())`,
-      sql`SELECT COUNT(*) FILTER (WHERE estado='vigente')::int as vigentes, COUNT(*) FILTER (WHERE estado='en_reclamo')::int as reclamos, COUNT(*) FILTER (WHERE estado='vigente' AND fecha_vencimiento <= CURRENT_DATE + 7)::int as por_vencer FROM garantias WHERE user_id = ${access.restaurantId}`,
-      sql`SELECT v.fecha, v.precio_final_ars, cl.nombre as cliente, s.modelo FROM ventas v LEFT JOIN clientes cl ON cl.id = v.cliente_id LEFT JOIN iphone_stock s ON s.id = v.stock_id WHERE v.user_id = ${access.restaurantId} ORDER BY v.fecha DESC LIMIT 5`,
+      sql`SELECT COUNT(*) FILTER (WHERE estado='disponible')::int as total, COUNT(*) FILTER (WHERE estado='disponible')::int as disponibles, COALESCE(SUM(precio_venta_usd) FILTER (WHERE estado='disponible'),0) as valorizado FROM iphone_stock WHERE user_id = ${access.storeId}`,
+      sql`SELECT modelo, COUNT(*)::int as cantidad FROM iphone_stock WHERE user_id = ${access.storeId} AND estado='disponible' GROUP BY modelo ORDER BY cantidad DESC LIMIT 8`,
+      sql`SELECT COUNT(*)::int as cantidad, COALESCE(SUM(precio_final_ars),0) as total FROM ventas WHERE user_id = ${access.storeId} AND fecha >= date_trunc('month', NOW())`,
+      sql`SELECT COUNT(*) FILTER (WHERE estado='vigente')::int as vigentes, COUNT(*) FILTER (WHERE estado='en_reclamo')::int as reclamos, COUNT(*) FILTER (WHERE estado='vigente' AND fecha_vencimiento <= CURRENT_DATE + 7)::int as por_vencer FROM garantias WHERE user_id = ${access.storeId}`,
+      sql`SELECT v.fecha, v.precio_final_ars, cl.nombre as cliente, s.modelo FROM ventas v LEFT JOIN clientes cl ON cl.id = v.cliente_id LEFT JOIN iphone_stock s ON s.id = v.stock_id WHERE v.user_id = ${access.storeId} ORDER BY v.fecha DESC LIMIT 5`,
     ]);
     return {
       stock: stock[0] as { total: number; disponibles: number; valorizado: number },

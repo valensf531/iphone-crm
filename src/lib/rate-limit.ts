@@ -45,7 +45,7 @@ export function checkRateLimit(key: string, limit: number, windowMs: number): Ra
   };
 }
 
-/* Devuelve true si el pedido entra dentro del límite (compatibilidad). */
+/* Devuelve true si el request entra dentro del límite (compatibilidad). */
 export function rateLimit(key: string, limit: number, windowMs: number): boolean {
   return checkRateLimit(key, limit, windowMs).allowed;
 }

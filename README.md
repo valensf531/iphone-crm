@@ -1,6 +1,6 @@
 # iPhone CRM — Stock, Dólar AR, Plan Canje y Garantías
 
-CRM para tienda de iPhones (1 local). Stack: Next.js 16 + React 19 + Tailwind 4 + shadcn/ui + better-auth + Neon Postgres. Basado en `kitchen-orders`.
+CRM para tienda de iPhones (1 local). Stack: Next.js 16 + React 19 + Tailwind 4 + shadcn/ui + better-auth + Neon Postgres.
 
 ## Qué incluye (Fase 1 lista)
 
@@ -33,5 +33,4 @@ npm run dev            # http://localhost:3000
 
 ## Pendiente (Fase 2)
 
-- Limpieza de rutas legacy de restaurante (`/menu`, `/carta`, `/api/orders`, `/api/tables`, `/api/zones`, componentes `KitchenDisplay`, etc.).
 - PDF de tasación/garantía/ticket, etiquetas QR, importación Excel, tabla `tasacion_base` editable desde UI.

@@ -38,7 +38,7 @@ if (!connectionString) {
 if (!/neon\.tech/i.test(connectionString)) {
   console.error(
     'DATABASE_URL no apunta a Neon. Este proyecto usa el driver serverless de Neon,\n' +
-    'que solo funciona con una base Neon cloud (como la de kitchen-orders).\n' +
+    'que solo funciona con una base Neon cloud.\n' +
     'Pasos: creá un proyecto "iphone-crm" en https://console.neon.tech\n' +
     'y pegá su connection string en .env.local como DATABASE_URL.',
   );

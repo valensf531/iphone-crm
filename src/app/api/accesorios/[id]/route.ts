@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (sets.length === 0) return NextResponse.json({ error: "Nada para actualizar" }, { status: 400 });
   await sql.query(
     `UPDATE accesorios SET ${sets.join(", ")}, updated_at = NOW() WHERE id = $1 AND user_id = $2`,
-    [id, admin.restaurantId, ...values]
+    [id, admin.storeId, ...values]
   );
   return NextResponse.json({ ok: true });
 }
@@ -37,6 +37,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const { id } = await params;
   const sql = getSql();
-  await sql`DELETE FROM accesorios WHERE id = ${id} AND user_id = ${admin.restaurantId}`;
+  await sql`DELETE FROM accesorios WHERE id = ${id} AND user_id = ${admin.storeId}`;
   return NextResponse.json({ ok: true });
 }

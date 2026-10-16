@@ -11,7 +11,7 @@ export async function GET() {
   const access = await requireAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
-  const rows = await sql`SELECT * FROM clientes WHERE user_id = ${access.restaurantId} ORDER BY created_at DESC LIMIT 200`;
+  const rows = await sql`SELECT * FROM clientes WHERE user_id = ${access.storeId} ORDER BY created_at DESC LIMIT 200`;
   return NextResponse.json({ clientes: rows });
 }
 
@@ -33,6 +33,6 @@ export async function POST(req: Request) {
   const sql = getSql();
   const id = uid("cli");
   await sql`INSERT INTO clientes (id, user_id, nombre, dni, telefono, email, direccion, notas)
-    VALUES (${id}, ${admin.restaurantId}, ${String(body.nombre).trim()}, ${dni || null}, ${body.telefono ?? null}, ${body.email ?? null}, ${body.direccion ?? null}, ${body.notas ?? null})`;
+    VALUES (${id}, ${admin.storeId}, ${String(body.nombre).trim()}, ${dni || null}, ${body.telefono ?? null}, ${body.email ?? null}, ${body.direccion ?? null}, ${body.notas ?? null})`;
   return NextResponse.json({ ok: true, id }, { status: 201 });
 }

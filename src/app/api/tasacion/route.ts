@@ -10,7 +10,7 @@ export async function GET() {
   const access = await requireAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
-  const rows = await sql`SELECT id, modelo, bateria_min, bateria_max, precio_toma_usd FROM tasacion_base WHERE user_id = ${access.restaurantId} ORDER BY modelo, bateria_min`;
+  const rows = await sql`SELECT id, modelo, bateria_min, bateria_max, precio_toma_usd FROM tasacion_base WHERE user_id = ${access.storeId} ORDER BY modelo, bateria_min`;
   return NextResponse.json({ lista: rows });
 }
 
@@ -36,10 +36,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: errores.slice(0, 5).join(" · ") }, { status: 400 });
   }
   const sql = getSql();
-  await sql`DELETE FROM tasacion_base WHERE user_id = ${admin.restaurantId}`;
+  await sql`DELETE FROM tasacion_base WHERE user_id = ${admin.storeId}`;
   for (const f of filas) {
     await sql`INSERT INTO tasacion_base (user_id, modelo, bateria_min, bateria_max, precio_toma_usd)
-      VALUES (${admin.restaurantId}, ${f.modelo}, ${f.bateria_min}, ${f.bateria_max}, ${f.precio_toma_usd})`;
+      VALUES (${admin.storeId}, ${f.modelo}, ${f.bateria_min}, ${f.bateria_max}, ${f.precio_toma_usd})`;
   }
   return NextResponse.json({ ok: true, cantidad: filas.length }, { status: 201 });
 }

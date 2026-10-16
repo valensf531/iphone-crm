@@ -17,21 +17,21 @@ export async function GET(req: NextRequest) {
   let rows;
   if (q && estado) {
     rows = await sql`
-      SELECT * FROM iphone_stock WHERE user_id = ${access.restaurantId} AND estado = ${estado}
+      SELECT * FROM iphone_stock WHERE user_id = ${access.storeId} AND estado = ${estado}
       AND (imei ILIKE ${"%" + q + "%"} OR modelo ILIKE ${"%" + q + "%"} OR color ILIKE ${"%" + q + "%"})
       ORDER BY updated_at DESC LIMIT 200`;
   } else if (q) {
     rows = await sql`
-      SELECT * FROM iphone_stock WHERE user_id = ${access.restaurantId}
+      SELECT * FROM iphone_stock WHERE user_id = ${access.storeId}
       AND (imei ILIKE ${"%" + q + "%"} OR modelo ILIKE ${"%" + q + "%"} OR color ILIKE ${"%" + q + "%"})
       ORDER BY updated_at DESC LIMIT 200`;
   } else if (estado) {
     rows = await sql`
-      SELECT * FROM iphone_stock WHERE user_id = ${access.restaurantId} AND estado = ${estado}
+      SELECT * FROM iphone_stock WHERE user_id = ${access.storeId} AND estado = ${estado}
       ORDER BY updated_at DESC LIMIT 200`;
   } else {
     rows = await sql`
-      SELECT * FROM iphone_stock WHERE user_id = ${access.restaurantId}
+      SELECT * FROM iphone_stock WHERE user_id = ${access.storeId}
       ORDER BY updated_at DESC LIMIT 200`;
   }
   return NextResponse.json({ stock: rows });
@@ -54,8 +54,8 @@ export async function POST(req: Request) {
   try {
     await sql`
       INSERT INTO iphone_stock (id, user_id, imei, serial, modelo, capacidad, color, estado_equipo, bateria_pct, estado, precio_compra_usd, precio_venta_usd, precio_venta_ars_manual, proveedor, notas, sellado)
-      VALUES (${id}, ${admin.restaurantId}, ${cleanImei}, ${(serial as string) ?? null}, ${String(modelo)}, ${String(capacidad)}, ${(color as string) ?? null}, ${(estado_equipo as string) ?? "usado_a"}, ${bateria_pct != null ? Number(bateria_pct) : null}, ${(estado as string) ?? "disponible"}, ${precio_compra_usd != null ? Number(precio_compra_usd) : null}, ${Number(precio_venta_usd ?? 0)}, ${precio_venta_ars_manual != null ? Number(precio_venta_ars_manual) : null}, ${(proveedor as string) ?? null}, ${(notas as string) ?? null}, ${sellado === true})`;
-    await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.restaurantId}, ${id}, 'ingreso', 'alta manual')`;
+      VALUES (${id}, ${admin.storeId}, ${cleanImei}, ${(serial as string) ?? null}, ${String(modelo)}, ${String(capacidad)}, ${(color as string) ?? null}, ${(estado_equipo as string) ?? "usado_a"}, ${bateria_pct != null ? Number(bateria_pct) : null}, ${(estado as string) ?? "disponible"}, ${precio_compra_usd != null ? Number(precio_compra_usd) : null}, ${Number(precio_venta_usd ?? 0)}, ${precio_venta_ars_manual != null ? Number(precio_venta_ars_manual) : null}, ${(proveedor as string) ?? null}, ${(notas as string) ?? null}, ${sellado === true})`;
+    await sql`INSERT INTO stock_movimientos (user_id, stock_id, tipo, motivo) VALUES (${admin.storeId}, ${id}, 'ingreso', 'alta manual')`;
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "";
     if (msg.includes("duplicate") || msg.includes("UNIQUE")) {
