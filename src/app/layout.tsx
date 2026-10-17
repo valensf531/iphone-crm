@@ -28,11 +28,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://iphone-crm.vercel.app"),
   title: "iPhone CRM - Stock, Canje y Garantías",
   description:
-    "CRM para tienda de iPhones: stock por IMEI, dólar Blue/Oficial Argentina, plan canje y garantías.",
+    "CRM diseñado por lumen para tiendas de iPhones.",
   openGraph: {
     title: "iPhone CRM",
     description:
-      "Stock por IMEI, dólar Blue/Oficial, plan canje y garantías.",
+      "CRM diseñado por lumen para tiendas de iPhones.",
     images: ["/logo.png"],
     type: "website",
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "iPhone CRM",
     description:
-      "Stock por IMEI, dólar Blue/Oficial, plan canje y garantías.",
+      "CRM diseñado por lumen para tiendas de iPhones.",
     images: ["/logo.png"],
   },
 };

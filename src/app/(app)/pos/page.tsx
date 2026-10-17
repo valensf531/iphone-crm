@@ -15,7 +15,7 @@ import { downscaleImage } from "@/lib/image";
 import { toast } from "@/hooks/use-toast";
 import { useDolar } from "@/hooks/use-dolar";
 import { useStoreSettings } from "@/hooks/use-store-settings";
-import { CheckCircle2, ClipboardCheck, ImagePlus, Loader2, Minus, Plug, Plus, Search, ShoppingCart, Smartphone, Trash2 } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, ImagePlus, Loader2, Minus, Plug, Plus, Search, ShoppingCart, Smartphone, Trash2, Users } from "lucide-react";
 
 const MAX_FOTOS = 4;
 const METODOS_PAGO = ["efectivo", "transferencia", "tarjeta_debito", "tarjeta_credito", "cuenta_corriente", "otro"] as const;
@@ -349,7 +349,9 @@ export default function PosPage() {
 
           <Card className="rounded-3xl">
             <CardHeader className="pb-3">
-              <CardTitle className="text-[15px]">2 · Cliente</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-[15px]">
+                <Users className="h-4 w-4" aria-hidden="true" /> 2 · Cliente
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ClientePicker
