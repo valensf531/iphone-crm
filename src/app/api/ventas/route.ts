@@ -35,15 +35,7 @@ export async function POST(req: Request) {
   if (!cliente_id) {
     return NextResponse.json({ error: "El cliente es obligatorio para registrar la venta" }, { status: 400 });
   }
-  // Verificación del dispositivo: obligatoria (pantalla, piezas, detalles).
-  const verif = (verificacion ?? {}) as Record<string, unknown>;
-  const verifPantalla = String(verif.pantalla ?? "").trim();
-  const verifPiezas = String(verif.piezas_cambiadas ?? "").trim();
-  const verifDetalles = String(verif.detalles ?? "").trim();
-  const verifRepro = verif.repro === true;
-  if (!verifPantalla || !verifPiezas || !verifDetalles) {
-    return NextResponse.json({ error: "La verificación del dispositivo es obligatoria" }, { status: 400 });
-  }
+  const sql = getSql();
   const fotosArr = Array.isArray(fotos) ? fotos.filter((f): f is string => typeof f === "string") : [];
   if (fotosArr.length > MAX_FOTOS) {
     return NextResponse.json({ error: `Máximo ${MAX_FOTOS} fotos por venta` }, { status: 400 });
@@ -53,7 +45,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Foto inválida o muy pesada" }, { status: 400 });
     }
   }
-  const sql = getSql();
   // Validaciones independientes en paralelo (1 round-trip en vez de 2).
   const [stock, cli] = await Promise.all([
     sql`SELECT * FROM iphone_stock WHERE id = ${String(stock_id)} AND user_id = ${admin.storeId}`,
@@ -62,6 +53,22 @@ export async function POST(req: Request) {
   if (stock.length === 0) return NextResponse.json({ error: "Equipo no encontrado" }, { status: 404 });
   if (cli.length === 0) return NextResponse.json({ error: "Cliente no encontrado" }, { status: 404 });  if ((stock[0] as { estado: string }).estado === "vendido") {
     return NextResponse.json({ error: "Ese equipo ya está vendido" }, { status: 400 });
+  }
+  // Verificación del dispositivo: obligatoria salvo equipo sellado
+  // (nuevo de fábrica: se registra con valores por defecto).
+  const esSellado = (stock[0] as { sellado?: boolean }).sellado === true;
+  const verif = (verificacion ?? {}) as Record<string, unknown>;
+  let verifPantalla = String(verif.pantalla ?? "").trim();
+  let verifPiezas = String(verif.piezas_cambiadas ?? "").trim();
+  let verifDetalles = String(verif.detalles ?? "").trim();
+  let verifRepro = verif.repro === true;
+  if (esSellado) {
+    verifPantalla = "Sellado de fábrica";
+    verifPiezas = "Ninguna (sellado)";
+    verifDetalles = "Equipo nuevo sellado de fábrica";
+    verifRepro = false;
+  } else if (!verifPantalla || !verifPiezas || !verifDetalles) {
+    return NextResponse.json({ error: "La verificación del dispositivo es obligatoria" }, { status: 400 });
   }
   // Accesorios opcionales: [{ accesorio_id, cantidad }]. Se validan y descuentan de stock.
   const accArr = Array.isArray(accesorios) ? accesorios : [];
@@ -115,7 +122,7 @@ export async function POST(req: Request) {
     ...accLines.map((l) => sql`UPDATE accesorios SET cantidad = cantidad - ${l.cantidad}, updated_at = NOW() WHERE id = ${l.accesorio_id} AND user_id = ${admin.storeId}`),
     // Fotos de cómo se entregó el equipo (opcional, máx. 4).
     ...fotosArr.map((foto) => sql`INSERT INTO venta_fotos (id, user_id, venta_id, foto) VALUES (${uid("fot")}, ${admin.storeId}, ${ventaId}, ${foto})`),
-    // Verificación del dispositivo (obligatoria, 1-a-1 por venta).
+    // Verificación del dispositivo (1-a-1 por venta; en sellados va por defecto).
     sql`INSERT INTO venta_verificacion (id, user_id, venta_id, pantalla, piezas_cambiadas, detalles, repro)
       VALUES (${uid("vve")}, ${admin.storeId}, ${ventaId}, ${verifPantalla}, ${verifPiezas}, ${verifDetalles}, ${verifRepro})`,
   ]);

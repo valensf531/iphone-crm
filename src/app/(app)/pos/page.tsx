@@ -15,7 +15,7 @@ import { downscaleImage } from "@/lib/image";
 import { toast } from "@/hooks/use-toast";
 import { useDolar } from "@/hooks/use-dolar";
 import { useStoreSettings } from "@/hooks/use-store-settings";
-import { CheckCircle2, ClipboardCheck, ImagePlus, Loader2, Minus, Plug, Plus, Search, ShoppingCart, Smartphone, Trash2, Users } from "lucide-react";
+import { BadgeCheck, CheckCircle2, ClipboardCheck, ImagePlus, Loader2, Minus, Plug, Plus, Search, ShoppingCart, Smartphone, Trash2, Users } from "lucide-react";
 
 const MAX_FOTOS = 4;
 const METODOS_PAGO = ["efectivo", "transferencia", "tarjeta_debito", "tarjeta_credito", "cuenta_corriente", "otro"] as const;
@@ -42,10 +42,6 @@ interface AccesorioItem {
 
 export default function PosPage() {
   const { accesoriosEnabled } = useStoreSettings();
-  /* Si el módulo Accesorios está apagado, el paso 3 no existe:
-     Verificación y Cobro se renumeran para no saltar números. */
-  const pasoVerif = accesoriosEnabled ? 4 : 3;
-  const pasoCobro = accesoriosEnabled ? 5 : 4;
   const [stock, setStock] = useState<StockItem[]>([]);
   const [clientes, setClientes] = useState<ClienteLite[]>([]);
   const [accesorios, setAccesorios] = useState<AccesorioItem[]>([]);
@@ -65,7 +61,7 @@ export default function PosPage() {
   const [verifPiezas, setVerifPiezas] = useState("");
   const [verifDetalles, setVerifDetalles] = useState("");
   const [verifRepro, setVerifRepro] = useState(false);
-  const verifCompleta =
+  const verifBase =
     verifPantalla.trim() !== "" && verifPiezas.trim() !== "" && verifDetalles.trim() !== "";
   const [tasas, setTasas] = useState({ blue: "", oficial: "" });
   const [fotos, setFotos] = useState<string[]>([]);
@@ -120,6 +116,13 @@ export default function PosPage() {
   }, [stock, buscarEquipo]);
 
   const equipoSel = stock.find((s) => s.id === stockId);
+  /* Sellado = nuevo de fábrica: se saltea la verificación (paso 4). */
+  const esSellado = equipoSel?.sellado === true;
+  const verifCompleta = esSellado || verifBase;
+  /* Pasos dinámicos: sin Accesorios no hay paso 3; si es sellado no hay
+     verificación y el Cobro sube un número para no saltear. */
+  const pasoVerif = accesoriosEnabled ? 4 : 3;
+  const pasoCobro = (accesoriosEnabled ? 5 : 4) - (esSellado ? 1 : 0);
   const accFiltrados = useMemo(() => {
     const t = buscarAcc.trim().toLowerCase();
     const disp = accesorios.filter((a) => Number(a.cantidad) > 0);
@@ -223,7 +226,7 @@ export default function PosPage() {
         metodo_pago: metodoPago,
         dias_garantia: Number(diasGarantia),
         notas: comentarios.trim() || undefined,
-        verificacion: {
+        verificacion: esSellado ? undefined : {
           pantalla: verifPantalla.trim(),
           piezas_cambiadas: verifPiezas.trim(),
           detalles: verifDetalles.trim(),
@@ -441,6 +444,14 @@ export default function PosPage() {
               </CardContent>
             </Card>
           ) : null}
+          {esSellado ? (
+            <Card className="rounded-3xl border-emerald-500/40 bg-emerald-500/5">
+              <CardContent className="flex items-center gap-2.5 p-4">
+                <BadgeCheck className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
+                <p className="text-sm text-foreground"><strong className="font-bold">Equipo sellado de fábrica:</strong> se omite la verificación del dispositivo.</p>
+              </CardContent>
+            </Card>
+          ) : (
           <Card className="rounded-3xl">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-[15px]">
@@ -499,6 +510,7 @@ export default function PosPage() {
               </label>
             </CardContent>
           </Card>
+          )}
         </div>
 
         <Card className="rounded-3xl lg:col-span-2 lg:sticky lg:top-4">
