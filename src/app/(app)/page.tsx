@@ -53,7 +53,7 @@ function StatShell({
           {icon}
           <Link
             href={href}
-            className="inline-flex shrink-0 items-center gap-1 rounded-lg px-1 py-0.5 text-xs font-bold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg px-1 py-0.5 text-xs font-bold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             {cta} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
@@ -70,7 +70,7 @@ function StockStat({ disponibles }: { disponibles: number }) {
       href="/stock"
       cta="Ver stock"
       icon={
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
           <Smartphone className="h-5 w-5" />
         </span>
       }
@@ -88,7 +88,7 @@ function SalesStat({ cantidad, total }: { cantidad: number; total: number }) {
       href="/ventas"
       cta="Ver ventas"
       icon={
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
           <ShoppingCart className="h-5 w-5" />
         </span>
       }
@@ -106,7 +106,7 @@ function WarrantyStat({ vigentes, reclamos, porVencer }: { vigentes: number; rec
       href="/garantias"
       cta="Ver garantías"
       icon={
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-muted text-foreground ring-1 ring-border" aria-hidden="true">
           <ShieldCheck className="h-5 w-5" />
         </span>
       }
