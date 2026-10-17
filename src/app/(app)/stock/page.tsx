@@ -26,6 +26,30 @@ interface Item {
   precio_venta_usd: number; precio_venta_ars_manual: number | null; proveedor: string | null;
 }
 
+/* Menú Editar/Borrar reutilizado en tabla (desktop) y tarjetas (mobile). */
+function AccionesStock({ item, onEditar, onBorrar }: { item: Item; onEditar: () => void; onBorrar: () => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="sm" variant="ghost" className="h-10 w-10 shrink-0 rounded-xl p-0" aria-label={`Opciones de ${item.modelo} ${item.capacidad}`}>
+          <MoreVertical className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={onEditar}>
+          <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> Editar
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={onBorrar}
+          className="text-destructive focus:text-destructive"
+        >
+          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" /> Borrar
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export default function StockPage() {
   const [items, setItems] = useState<Item[]>([]);
   const [q, setQ] = useState("");
@@ -358,7 +382,45 @@ export default function StockPage() {
               <p className="text-xs tabular-nums text-muted-foreground" aria-live="polite">
                 {hayFiltros ? `${filtrados.length} de ${items.length} equipos` : `${items.length} resultado${items.length === 1 ? "" : "s"}`}
               </p>
-              <div className="cv-auto -mx-1 px-1">
+              {/* Mobile: tarjetas apiladas (la tabla de 4 columnas no entra a 360px) */}
+              {cargando ? (
+                <div className="space-y-2 sm:hidden" aria-label="Cargando stock">
+                  {["m1", "m2", "m3", "m4"].map((k) => (
+                    <div key={k} className="h-[110px] animate-pulse rounded-2xl bg-muted" />
+                  ))}
+                </div>
+              ) : filtrados.length > 0 ? (
+                <ul className="space-y-2 sm:hidden" aria-label="Listado de iPhones en stock">
+                  {filtrados.map((i) => {
+                    const ars = i.precio_venta_ars_manual != null ? Number(i.precio_venta_ars_manual) : arsFromUsd(Number(i.precio_venta_usd), dolar);
+                    return (
+                      <li key={i.id} className="rounded-2xl border border-border p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="flex min-w-0 flex-wrap items-center gap-1.5 font-semibold text-foreground">
+                              <span className="truncate">{i.modelo} <span className="font-normal tabular-nums text-muted-foreground">{i.capacidad}</span></span>
+                              {i.sellado ? <Badge variant="success" className="shrink-0">Sellado</Badge> : null}
+                            </p>
+                            <p className="mt-0.5 min-w-0 truncate text-xs text-muted-foreground">{i.color ?? "—"}</p>
+                          </div>
+                          <AccionesStock item={i} onEditar={() => abrirEdicion(i)} onBorrar={() => setBorrarItem(i)} />
+                        </div>
+                        <div className="mt-2 flex items-end justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="truncate font-mono text-xs tabular-nums text-foreground">{i.imei}</p>
+                            {i.sellado ? null : <p className="mt-0.5 tabular-nums text-muted-foreground text-xs">Bat {i.bateria_pct ?? "—"}%</p>}
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-bold tabular-nums text-foreground">{formatUSD(i.precio_venta_usd)}</p>
+                            <p className="text-xs tabular-nums text-muted-foreground">{formatARS(ars)}{i.precio_venta_ars_manual != null ? " · manual" : ""}</p>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : null}
+              <div className="cv-auto -mx-1 hidden px-1 sm:block">
               <Table>
                 <caption className="sr-only">Listado de iPhones en stock con IMEI, batería y precio</caption>
                 <TableHeader><TableRow><TableHead scope="col">Equipo</TableHead><TableHead scope="col">IMEI&nbsp;/&nbsp;Bat</TableHead><TableHead scope="col" className="text-right">Precio</TableHead><TableHead scope="col"><span className="sr-only">Acciones</span></TableHead></TableRow></TableHeader>
@@ -386,24 +448,7 @@ export default function StockPage() {
                           <p className="text-xs tabular-nums text-muted-foreground">{formatARS(ars)}{i.precio_venta_ars_manual != null ? " · manual" : ""}</p>
                         </TableCell>
                         <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button size="sm" variant="ghost" className="h-10 w-10 rounded-xl p-0" aria-label={`Opciones de ${i.modelo} ${i.capacidad}`}>
-                                <MoreVertical className="h-4 w-4" aria-hidden="true" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onSelect={() => abrirEdicion(i)}>
-                                <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> Editar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onSelect={() => setBorrarItem(i)}
-                                className="text-destructive focus:text-destructive"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" /> Borrar
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <AccionesStock item={i} onEditar={() => abrirEdicion(i)} onBorrar={() => setBorrarItem(i)} />
                         </TableCell>
                       </TableRow>
                     );

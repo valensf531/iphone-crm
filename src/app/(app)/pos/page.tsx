@@ -445,12 +445,10 @@ export default function PosPage() {
             </Card>
           ) : null}
           {esSellado ? (
-            <Card className="rounded-3xl border-emerald-500/40 bg-emerald-500/5">
-              <CardContent className="flex items-center gap-2.5 p-4">
-                <BadgeCheck className="h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
-                <p className="text-sm text-foreground"><strong className="font-bold">Equipo sellado de fábrica:</strong> se omite la verificación del dispositivo.</p>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-2 rounded-2xl border border-emerald-500/40 bg-emerald-500/5 px-3.5 py-2.5" role="note">
+              <BadgeCheck className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
+              <p className="text-[13px] leading-snug text-foreground"><strong className="font-bold">Sellado de fábrica:</strong> se omite la verificación.</p>
+            </div>
           ) : (
           <Card className="rounded-3xl">
             <CardHeader className="pb-3">

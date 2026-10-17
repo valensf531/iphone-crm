@@ -76,7 +76,7 @@ function StockStat({ disponibles }: { disponibles: number }) {
       }
     >
       <p className="text-xs font-semibold text-muted-foreground">Equipos disponibles</p>
-      <p className="font-display text-4xl font-semibold tabular-nums tracking-tight text-foreground">{disponibles}</p>
+      <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">{disponibles}</p>
       <p className="mt-1 text-sm tabular-nums text-muted-foreground">{disponibles === 1 ? "equipo en stock" : "equipos en stock"}</p>
     </StatShell>
   );
@@ -94,7 +94,7 @@ function SalesStat({ cantidad, total }: { cantidad: number; total: number }) {
       }
     >
       <p className="text-xs font-semibold text-muted-foreground">Ventas del mes</p>
-      <p className="font-display text-4xl font-semibold tabular-nums tracking-tight text-foreground">{cantidad}</p>
+      <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">{cantidad}</p>
       <p className="mt-1 min-w-0 truncate text-sm tabular-nums text-muted-foreground">{formatARS(total)} facturado</p>
     </StatShell>
   );
@@ -112,7 +112,7 @@ function WarrantyStat({ vigentes, reclamos, porVencer }: { vigentes: number; rec
       }
     >
       <p className="text-xs font-semibold text-muted-foreground">Garantías vigentes</p>
-      <p className="font-display text-4xl font-semibold tabular-nums tracking-tight text-foreground">{vigentes}</p>
+      <p className="font-display text-3xl font-semibold tabular-nums tracking-tight text-foreground">{vigentes}</p>
       <p className="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5 text-sm text-muted-foreground" aria-live="polite">
         {reclamos > 0 ? <Badge variant="destructive">{reclamos} en reclamo</Badge> : null}
         {porVencer > 0 ? <Badge variant="warning">{porVencer} por vencer</Badge> : null}
@@ -140,14 +140,14 @@ export default async function DashboardPage() {
         }
       />
 
-      <section aria-label="Stock valorizado" className="animate-rise rounded-3xl border border-border bg-card p-6 shadow-[0_1px_2px_rgb(0_0_0/0.05)] sm:p-8">
+      <section aria-label="Stock valorizado" className="animate-rise rounded-3xl border border-border bg-card p-5 shadow-[0_1px_2px_rgb(0_0_0/0.05)] sm:p-8">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div className="min-w-0">
             <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
               Stock valorizado
             </p>
-            <p className="font-display mt-2 break-words text-4xl font-bold tabular-nums leading-none tracking-tight text-foreground sm:text-6xl" aria-live="polite">
+            <p className="font-display mt-2 break-words text-3xl font-bold tabular-nums leading-none tracking-tight text-foreground sm:text-6xl" aria-live="polite">
               {formatUSD(d.stock.valorizado)}
             </p>
             <p className="mt-3 max-w-xl text-[15px] leading-relaxed tabular-nums text-muted-foreground">

@@ -86,7 +86,44 @@ export default function VentasPage() {
         <Card className="rounded-3xl">
           <CardHeader><CardTitle className="text-[15px]">Historial</CardTitle></CardHeader>
           <CardContent>
+            {/* Mobile: tarjetas apiladas (la tabla de 5 columnas no entra a 360px) */}
+            {cargando ? (
+              <div className="space-y-2 sm:hidden" aria-label="Cargando ventas">
+                {["m1", "m2", "m3", "m4", "m5"].map((k) => (
+                  <div key={k} className="h-[76px] animate-pulse rounded-2xl bg-muted" />
+                ))}
+              </div>
+            ) : ventas.length > 0 ? (
+              <ul className="space-y-2 sm:hidden" aria-label="Historial de ventas">
+                {ventas.map((v) => {
+                  const accCount = Number(v.accesorios_count ?? 0);
+                  const totalGen = Number(v.precio_final_ars ?? 0) + Number(v.accesorios_total_ars ?? 0);
+                  return (
+                    <li key={String(v.id)}>
+                      <button
+                        type="button"
+                        onClick={() => verDetalle(String(v.id), `${String(v.modelo ?? "Equipo")} · ${String(v.cliente_nombre ?? "Sin cliente")}`)}
+                        className="block w-full touch-manipulation rounded-2xl border border-border p-3 text-left transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-[0.99]"
+                      >
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="min-w-0 truncate text-sm font-bold text-foreground">
+                            {String(v.modelo ?? "Equipo")} <span className="font-mono font-normal tabular-nums text-muted-foreground">··{String(v.imei ?? "").slice(-4)}</span>
+                          </span>
+                          <strong className="shrink-0 text-sm font-bold tabular-nums text-foreground">{formatARS(totalGen)}</strong>
+                        </span>
+                        <span className="mt-1 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                          <span className="min-w-0 truncate">{String(v.cliente_nombre ?? "Sin cliente")}{v.fecha ? ` · ${dateTimeFmt.format(new Date(String(v.fecha)))}` : ""}</span>
+                          {accCount > 0 ? <Badge variant="secondary" className="shrink-0">+{accCount} acc.</Badge> : null}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+            <div className="hidden sm:block">
             <Table>
+              <caption className="sr-only">Historial de ventas</caption>
               <TableHeader><TableRow><TableHead>Equipo</TableHead><TableHead>Cliente</TableHead><TableHead>Fecha</TableHead><TableHead className="text-right">Total</TableHead><TableHead><span className="sr-only">Acciones</span></TableHead></TableRow></TableHeader>
               <TableBody>
                 {cargando ? (
@@ -128,8 +165,9 @@ export default function VentasPage() {
                     );
                   })
                 )}
-              </TableBody>
-            </Table>
+                </TableBody>
+              </Table>
+            </div>
             {!cargando && ventas.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">Todavía no hay ventas. Generá la primera en PoS.</p> : null}
           </CardContent>
         </Card>

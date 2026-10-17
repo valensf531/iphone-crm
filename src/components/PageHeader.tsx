@@ -23,7 +23,7 @@ export function PageHeader({
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="font-display mt-1.5 text-[28px] font-semibold leading-[1.05] tracking-tight text-foreground text-balance sm:text-[34px]">{title}</h1>
+        <h1 className="font-display mt-1.5 text-2xl font-semibold leading-[1.05] tracking-tight text-foreground text-balance sm:text-[34px]">{title}</h1>
         {description ? <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-muted-foreground text-pretty">{description}</p> : null}
       </div>
       {actions ? <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0">{actions}</div> : null}
